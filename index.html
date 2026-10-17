@@ -68,8 +68,12 @@
       </button>
     </div>
   </nav>
-  <div class="mobile-menu glass" hidden>
-    <a href="#work">Work</a><a href="/work">Case studies</a><a href="#about">About</a><a href="#pricing">Pricing</a><a href="#blog">Blog</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
+  <div class="mm-scrim" hidden></div>
+  <div class="mobile-menu glass-strong" hidden role="dialog" aria-label="Menu">
+    <nav class="mm-links">
+      <a href="#work"><span>Work</span><i>→</i></a><a href="/work"><span>Case studies</span><i>→</i></a><a href="#about"><span>About</span><i>→</i></a><a href="#pricing"><span>Pricing</span><i>→</i></a><a href="#blog"><span>Blog</span><i>→</i></a><a href="#faq"><span>FAQ</span><i>→</i></a><a href="#contact"><span>Contact</span><i>→</i></a>
+    </nav>
+    <button class="mm-est" type="button" data-est=""><span><b>Get an instant estimate</b><small>4 quick questions, price in seconds</small></span><i>→</i></button>
     <div class="mm-row">
       <a class="btn btn-accent" data-wa href="#">WhatsApp me</a>
       <a class="btn btn-glass" href="cv/Jaiye_Oluwatishe_Daniel_CV.pdf" download>Download CV</a>
@@ -211,7 +215,7 @@
       <div class="cur-pills" role="radiogroup" aria-label="Currency"></div>
     </div>
     <div class="price-grid"></div>
-    <div class="estimator glass" id="estimate" data-reveal></div>
+    <div class="est-cta glass" data-reveal><div><b>Not sure what it will cost?</b><span>Answer 4 quick questions and see a price, with every line explained.</span></div><button class="btn btn-ink" type="button" data-est="">Get an instant estimate</button></div>
   </section>
 
   <!-- BLOG -->
@@ -287,6 +291,10 @@
 </nav>
 
 <!-- Settings -->
+<div class="sheet est-sheet" id="estimate" role="dialog" aria-modal="true" aria-labelledby="est-title" hidden>
+  <div class="scrim" data-close></div>
+  <div class="panel glass-strong est-panel" tabindex="-1"></div>
+</div>
 <div class="sheet" id="settings" role="dialog" aria-modal="true" aria-labelledby="set-title" hidden>
   <div class="scrim" data-close></div>
   <div class="panel glass-strong">

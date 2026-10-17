@@ -75,29 +75,29 @@ const PRICES = [
 ];
 /* Estimator: base price covers `inc` units; each extra unit adds `per`. Weeks scale with size. */
 const EST_TYPES = [
-  { id: 'landing', t: 'Landing page', base: 150, unit: 'sections', inc: 6, per: 15, min: 3, max: 14, weeks: 1, keys: ['landing', 'one page', 'one-page', 'waitlist', 'launch page'] },
-  { id: 'website', t: 'Full website', base: 400, unit: 'pages', inc: 5, per: 50, min: 1, max: 20, weeks: 3, build: true, keys: ['website', 'site', 'webflow', 'framer', 'portfolio', 'company site', 'blog'] },
-  { id: 'app', t: 'Mobile app', base: 500, unit: 'screens', inc: 25, per: 14, min: 8, max: 70, weeks: 3.5, keys: ['app', 'mobile', 'ios', 'android'] },
-  { id: 'dashboard', t: 'Dashboard or SaaS', base: 600, unit: 'screens', inc: 20, per: 22, min: 6, max: 60, weeks: 4.5, keys: ['dashboard', 'saas', 'admin', 'analytics', 'web app', 'platform', 'crm'] },
-  { id: 'brand', t: 'Brand identity', base: 200, unit: 'brand assets', inc: 6, per: 20, min: 2, max: 16, weeks: 2, keys: ['brand', 'logo', 'identity', 'branding'] },
-  { id: 'deck', t: 'Pitch deck or PRD', base: 120, unit: 'slides', inc: 15, per: 6, min: 5, max: 40, weeks: 1, keys: ['deck', 'pitch', 'prd', 'slides', 'presentation', 'investor'] },
-  { id: 'game', t: 'Game UI', base: 300, unit: 'screens', inc: 12, per: 18, min: 4, max: 40, weeks: 2.5, keys: ['game', 'hud', 'gaming'] },
+  { id: 'landing', t: 'Landing page', d: 'One page that explains and sells', base: 150, unit: 'sections', one: 'section', inc: 6, per: 10, min: 3, max: 14, weeks: 1, incl: 'Desktop and mobile design, a clickable prototype and two rounds of changes', keys: ['landing', 'one page', 'one-page', 'waitlist', 'launch page'] },
+  { id: 'website', t: 'Full website', d: 'Designed and built live for you', base: 400, unit: 'pages', one: 'page', inc: 5, per: 25, min: 1, max: 20, weeks: 3, incl: 'Design and build, editable content, SEO basics and 30 days of support', keys: ['website', 'site', 'webflow', 'framer', 'portfolio', 'company site', 'blog'] },
+  { id: 'app', t: 'Mobile app', d: 'iOS and Android screens', base: 500, unit: 'screens', one: 'screen', inc: 25, per: 8, min: 8, max: 70, weeks: 3.5, incl: 'User flows, the screens, a clickable prototype and developer handoff', keys: ['app', 'mobile', 'ios', 'android'] },
+  { id: 'dashboard', t: 'Dashboard or SaaS', d: 'Web app, admin or analytics', base: 600, unit: 'screens', one: 'screen', inc: 20, per: 12, min: 6, max: 60, weeks: 4.5, incl: 'A discovery session, the screens, a component library and a prototype', keys: ['dashboard', 'saas', 'admin', 'analytics', 'web app', 'platform', 'crm'] },
+  { id: 'brand', t: 'Brand identity', d: 'Logo, colours, type and kit', base: 200, unit: 'brand assets', one: 'brand asset', inc: 6, per: 12, min: 2, max: 16, weeks: 2, incl: 'Logo suite, colours and type, brand guidelines and a social kit', keys: ['brand', 'logo', 'identity', 'branding'] },
+  { id: 'deck', t: 'Pitch deck or PRD', d: 'Investor deck or product spec', base: 120, unit: 'slides', one: 'slide', inc: 15, per: 4, min: 5, max: 40, weeks: 1, incl: 'Story and structure, charts from your data and an editable file', keys: ['deck', 'pitch', 'prd', 'slides', 'presentation', 'investor'] },
+  { id: 'game', t: 'Game UI', d: 'HUD, menus and game screens', base: 300, unit: 'screens', one: 'screen', inc: 12, per: 10, min: 4, max: 40, weeks: 2.5, incl: 'HUD, menus, a UI kit with states and an icon set', keys: ['game', 'hud', 'gaming'] },
 ];
 const EST_EXTRAS = [
-  { id: 'research', t: 'User research and interviews', usd: 120, not: ['deck'] },
-  { id: 'system', t: 'Design system and components', usd: 150, only: ['app', 'dashboard', 'website', 'game'] },
-  { id: 'copy', t: 'Copywriting', usd: 80 },
-  { id: 'motion', t: 'Motion and micro-interactions', usd: 90 },
-  { id: 'build', t: 'Build it live (no-code)', usd: 220, only: ['landing'] },
-  { id: 'logo', t: 'Logo and brand starter', usd: 120, not: ['brand'] },
-  { id: 'illus', t: 'Custom illustrations or 3D', usd: 110 },
-  { id: 'handoff', t: 'Developer handoff and QA', usd: 70, not: ['website', 'deck'] },
+  { id: 'research', t: 'User research', d: 'I talk to your users first, so we design the right thing', usd: 60, not: ['deck'] },
+  { id: 'system', t: 'Design system', d: 'Reusable colours, buttons and parts that keep it consistent', usd: 80, only: ['app', 'dashboard', 'website', 'game'] },
+  { id: 'copy', t: 'Copywriting', d: 'I write the words on every page or screen', usd: 40 },
+  { id: 'motion', t: 'Motion', d: 'Animations that make it feel smooth and alive', usd: 45 },
+  { id: 'build', t: 'Build it live', d: 'Your page built and published on Framer or Webflow', usd: 120, only: ['landing'] },
+  { id: 'logo', t: 'Logo starter', d: 'A simple logo and colours if you don’t have one yet', usd: 60, not: ['brand'] },
+  { id: 'illus', t: 'Illustrations or 3D', d: 'Custom visuals made just for you', usd: 60 },
+  { id: 'handoff', t: 'Developer handoff', d: 'Specs for your developers, and I check their build', usd: 30, not: ['website', 'deck'] },
 ];
 const EST_SPEED = [
-  { id: 'relaxed', t: 'Flexible', note: 'No rush', mult: 0.92, time: 1.3 },
-  { id: 'standard', t: 'Standard', note: 'Normal pace', mult: 1, time: 1 },
-  { id: 'fast', t: 'Fast', note: '+25%', mult: 1.25, time: 0.7 },
-  { id: 'rush', t: 'Rush', note: '+50%', mult: 1.5, time: 0.5 },
+  { id: 'relaxed', t: 'Flexible', d: 'No deadline, I fit it in', mult: 0.9, time: 1.3 },
+  { id: 'standard', t: 'Standard', d: 'My normal pace', mult: 1, time: 1 },
+  { id: 'fast', t: 'Fast', d: 'I move it up the queue', mult: 1.15, time: 0.75 },
+  { id: 'rush', t: 'Rush', d: 'Top priority, extra hours', mult: 1.3, time: 0.55 },
 ];
 const CUR = [['USD', 'US dollar', 1], ['GBP', 'British pound', 0.75], ['EUR', 'Euro', 0.86], ['NGN', 'Nigerian naira', 1460], ['CAD', 'Canadian dollar', 1.38]];
 
@@ -374,104 +374,123 @@ function renderPricing() {
   }).catch(() => {});
 }
 
-/* Price estimator: pick a project, size, extras and pace; get a live range in the chosen currency */
+/* Price estimator: a glass popup that walks through 4 steps, then shows a plain-English breakdown */
 function initEstimator(getCur) {
-  const root = $('#estimate'); if (!root) return null;
-  const st = { type: 'app', size: 25, extras: new Set(), speed: 'standard', note: '', picked: false };
+  const sheet = $('#estimate'); if (!sheet) return null;
+  const root = $('.est-panel', sheet);
+  const st = { type: 'app', size: 25, extras: new Set(), speed: 'standard', note: '', picked: false, step: 0 };
+  const STEPS = ['Project', 'Size', 'Extras', 'Timeline', 'Estimate'];
   const T = () => EST_TYPES.find((x) => x.id === st.type);
   const extrasFor = (t) => EST_EXTRAS.filter((e) => (!e.only || e.only.includes(t.id)) && (!e.not || !e.not.includes(t.id)));
-  root.innerHTML = `
-    <div class="est-form">
-      <div class="est-head"><h3>Get an instant estimate</h3><p>Pick what you need. The price updates as you go.</p></div>
-      <label class="est-field"><span class="est-label">What are you building?</span>
-        <textarea id="est-note" rows="2" placeholder="e.g. A mobile app for booking barbers, about 20 screens" maxlength="400"></textarea></label>
-      <div class="est-field"><span class="est-label">Project type</span><div class="est-chips" data-k="type" role="radiogroup" aria-label="Project type">
-        ${EST_TYPES.map((t) => `<button type="button" role="radio" data-v="${t.id}">${t.t}</button>`).join('')}</div></div>
-      <div class="est-field"><span class="est-label">Size <b class="est-size-v"></b></span>
-        <input type="range" class="est-range" aria-label="Project size"><div class="est-hint"></div></div>
-      <div class="est-field"><span class="est-label">Add-ons</span><div class="est-extras"></div></div>
-      <div class="est-field"><span class="est-label">Timeline</span><div class="est-speed" role="radiogroup" aria-label="Timeline">
-        ${EST_SPEED.map((s) => `<button type="button" role="radio" data-v="${s.id}"><b>${s.t}</b><small>${s.note}</small></button>`).join('')}</div></div>
-    </div>
-    <aside class="est-out" aria-live="polite"><div class="est-stick">
-      <span class="est-kicker">Your estimate</span>
-      <div class="est-amt"><span class="est-lo"></span><i>to</i><span class="est-hi"></span></div>
-      <div class="est-time"></div>
-      <ul class="est-break"></ul>
-      <a class="btn btn-ink full est-send" target="_blank" rel="noopener" href="#">Send this to me on WhatsApp</a>
-      <p class="est-fine">An estimate, not an invoice. You get a fixed quote within a day. Half to start, half on handoff.</p>
-    </div></aside>`;
-  const range = $('.est-range', root), note = $('#est-note', root);
-  const shown = { lo: 0, hi: 0 };
   const money = (usd) => { const c = getCur(); return fmt(nice(usd * rates[c], c), c); };
-  const animateTo = (el, key, target) => {
-    const from = shown[key]; shown[key] = target;
-    if (!motionOn() || !from) { el.textContent = money(target); return; }
-    const t0 = performance.now(), d = 450;
-    const step = (now) => { const k = Math.min(1, (now - t0) / d), e = 1 - Math.pow(1 - k, 3); el.textContent = money(from + (target - from) * e); if (k < 1) requestAnimationFrame(step); };
-    requestAnimationFrame(step);
+  const weeksText = (w) => { if (w < 1) return 'About ' + Math.max(3, Math.round(w * 7)) + ' days'; const a = Math.max(1, Math.floor(w)), b = Math.max(a + 1, Math.ceil(w)); return `${a} to ${b} weeks`; };
+  const calc = (o = {}) => {
+    const s = { ...st, ...o }, t = EST_TYPES.find((x) => x.id === s.type), sp = EST_SPEED.find((x) => x.id === s.speed);
+    const more = Math.max(0, s.size - t.inc), fewer = Math.max(0, t.inc - s.size);
+    const sizeCost = more * t.per - fewer * t.per * 0.5;
+    const extras = [...s.extras].map((id) => EST_EXTRAS.find((e) => e.id === id)).filter(Boolean);
+    const sub = Math.max(t.base * 0.7, t.base + sizeCost + extras.reduce((a, e) => a + e.usd, 0));
+    const total = sub * sp.mult;
+    const weeks = Math.max(0.5, t.weeks * (0.6 + 0.4 * s.size / t.inc) * sp.time + extras.length * 0.15);
+    return { t, sp, more, fewer, sizeCost, extras, sub, total, lo: total, hi: total * 1.15, weeks };
   };
-  const setType = (id, keepSize) => {
-    st.type = id; const t = T();
-    range.min = t.min; range.max = t.max; range.step = 1;
-    if (!keepSize) st.size = t.inc;
-    st.size = Math.max(t.min, Math.min(t.max, st.size)); range.value = st.size;
-    const ok = new Set(extrasFor(t).map((e) => e.id)); st.extras.forEach((x) => { if (!ok.has(x)) st.extras.delete(x); });
-    $('.est-extras', root).innerHTML = extrasFor(t).map((e) => `<label class="est-x"><input type="checkbox" value="${e.id}" ${st.extras.has(e.id) ? 'checked' : ''}><span>${e.t}</span><em data-usd="${e.usd}"></em></label>`).join('');
-    $$('.est-x input', root).forEach((c) => c.addEventListener('change', () => { c.checked ? st.extras.add(c.value) : st.extras.delete(c.value); update(); }));
-    update();
-  };
-  const calc = () => {
-    const t = T(), sp = EST_SPEED.find((s) => s.id === st.speed);
-    const extraUnits = Math.max(0, st.size - t.inc);
-    const sizeCost = extraUnits * t.per - Math.max(0, t.inc - st.size) * t.per * 0.5;
-    const extras = [...st.extras].map((id) => EST_EXTRAS.find((e) => e.id === id));
-    const sub = t.base + sizeCost + extras.reduce((a, e) => a + e.usd, 0);
-    const total = Math.max(t.base * 0.6, sub) * sp.mult;
-    const weeks = Math.max(0.5, t.weeks * (0.6 + 0.4 * st.size / t.inc) * sp.time + extras.length * 0.15);
-    return { t, sp, sizeCost, extras, total, lo: total, hi: total * 1.2, weeks };
-  };
-  const weeksText = (w) => { if (w < 1) return 'About ' + Math.max(3, Math.round(w * 7)) + ' days'; const a = Math.max(1, Math.floor(w)), b = Math.max(a + 1, Math.ceil(w)); return a === b ? `About ${a} week${a > 1 ? 's' : ''}` : `${a} to ${b} weeks`; };
-  function update() {
-    const r = calc(), t = r.t;
-    $$('[data-k="type"] button', root).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === st.type));
-    $$('.est-speed button', root).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === st.speed));
-    $('.est-size-v', root).textContent = `${st.size} ${t.unit}`;
-    $('.est-hint', root).textContent = `${t.inc} ${t.unit} included in the base price`;
-    range.style.setProperty('--p', ((st.size - t.min) / (t.max - t.min) * 100) + '%');
-    $$('.est-x em', root).forEach((e) => (e.textContent = '+' + money(+e.dataset.usd)));
-    animateTo($('.est-lo', root), 'lo', r.lo); animateTo($('.est-hi', root), 'hi', r.hi);
-    $('.est-time', root).textContent = `${weeksText(r.weeks)} · ${r.sp.t.toLowerCase()} timeline`;
-    const rows = [[`${t.t} base`, t.base]];
-    if (r.sizeCost) rows.push([`${r.sizeCost > 0 ? 'Extra' : 'Fewer'} ${t.unit}`, r.sizeCost]);
-    r.extras.forEach((e) => rows.push([e.t, e.usd]));
-    if (r.sp.mult !== 1) rows.push([`${r.sp.t} timeline`, r.total - r.total / r.sp.mult]);
-    $('.est-break', root).innerHTML = rows.map(([k, v]) => `<li><span>${k}</span><b>${v < 0 ? '−' : ''}${money(Math.abs(v))}</b></li>`).join('');
-    const msg = `Hi Jaiye, I used the estimator on your site.\n\nProject: ${t.t}\nSize: ${st.size} ${t.unit}\nAdd-ons: ${r.extras.map((e) => e.t).join(', ') || 'None'}\nTimeline: ${r.sp.t}\nEstimate: ${money(r.lo)} to ${money(r.hi)}${st.note ? `\n\nAbout the project: ${st.note}` : ''}`;
-    $('.est-send', root).href = wa(msg);
+  root.innerHTML = `
+    <div class="est-top">
+      <div><span class="est-kicker">Instant estimate</span><h2 id="est-title">What will it cost?</h2></div>
+      <button class="icon-btn" data-close aria-label="Close estimate">✕</button>
+    </div>
+    <ol class="est-steps">${STEPS.map((s, i) => `<li data-i="${i}"><i>${i + 1}</i><span>${s}</span></li>`).join('')}</ol>
+    <div class="est-body"></div>
+    <div class="est-foot">
+      <div class="est-live"><small>Estimate so far</small><b class="est-live-v"></b></div>
+      <div class="est-nav"><button class="btn btn-glass est-back" type="button">Back</button><button class="btn btn-ink est-next" type="button">Next</button></div>
+    </div>`;
+  const body = $('.est-body', root);
+  const views = [
+    () => `<h3>What are you building?</h3><p class="est-sub">Describe it in a line, or just pick one below.</p>
+      <textarea id="est-note" rows="2" maxlength="400" placeholder="e.g. A booking app for barbers, about 20 screens">${esc(st.note)}</textarea>
+      <div class="est-cards two" role="radiogroup" aria-label="Project type">${EST_TYPES.map((t) => `<button type="button" role="radio" class="est-card" data-type="${t.id}" aria-checked="${t.id === st.type}"><b>${t.t}</b><small>${t.d}</small><em>from ${money(t.base)}</em></button>`).join('')}</div>`,
+    () => { const t = T(); const presets = [['Small', t.min + Math.round((t.inc - t.min) * 0.4)], ['Typical', t.inc], ['Large', Math.round(t.inc + (t.max - t.inc) * 0.45)]];
+      return `<h3>How big is it?</h3><p class="est-sub">The ${t.t.toLowerCase()} price already covers <b>${t.inc} ${t.unit}</b>. Each extra ${t.one} adds <b>${money(t.per)}</b>.</p>
+      <div class="est-presets">${presets.map(([n, v]) => `<button type="button" class="est-chip" data-size="${v}" aria-pressed="${st.size === v}">${n}<small>${v} ${t.unit}</small></button>`).join('')}</div>
+      <div class="est-slider"><div class="est-size"><b class="est-size-n">${st.size}</b> ${t.unit}</div>
+      <input type="range" class="est-range" min="${t.min}" max="${t.max}" step="1" value="${st.size}" aria-label="Number of ${t.unit}">
+      <div class="est-scale"><span>${t.min}</span><span>${t.max}</span></div></div>
+      <p class="est-note-line"></p>`; },
+    () => { const t = T(); return `<h3>Anything extra?</h3><p class="est-sub">All optional. Skip this if you just need the design.</p>
+      <div class="est-cards">${extrasFor(t).map((e) => `<label class="est-card est-x"><input type="checkbox" value="${e.id}" ${st.extras.has(e.id) ? 'checked' : ''}><span class="est-x-t"><b>${e.t}</b><small>${e.d}</small></span><em>+${money(e.usd)}</em></label>`).join('')}</div>`; },
+    () => `<h3>When do you need it?</h3><p class="est-sub">Faster means I clear other work to focus on yours.</p>
+      <div class="est-cards">${EST_SPEED.map((s) => { const r = calc({ speed: s.id }); const pct = Math.round((s.mult - 1) * 100);
+        return `<button type="button" role="radio" class="est-card est-sp" data-speed="${s.id}" aria-checked="${s.id === st.speed}"><span class="est-x-t"><b>${s.t} · ${weeksText(r.weeks)}</b><small>${s.d}</small></span><em>${pct === 0 ? 'Normal price' : (pct > 0 ? '+' : '−') + Math.abs(pct) + '%'}</em></button>`; }).join('')}</div>`,
+    () => { const r = calc(), t = r.t;
+      const rows = [[`${t.t}`, `Includes ${t.inc} ${t.unit}: ${t.incl.charAt(0).toLowerCase() + t.incl.slice(1)}.`, t.base]];
+      if (r.more) rows.push([`${r.more} extra ${r.more > 1 ? t.unit : t.one}`, `${r.more} × ${money(t.per)} for each ${t.one} past the ${t.inc} included.`, r.more * t.per]);
+      if (r.fewer) rows.push([`${r.fewer} fewer ${r.fewer > 1 ? t.unit : t.one}`, `You need less than the ${t.inc} included, so it costs less.`, -r.fewer * t.per * 0.5]);
+      r.extras.forEach((e) => rows.push([e.t, e.d + '.', e.usd]));
+      if (r.sp.mult !== 1) rows.push([`${r.sp.t} timeline`, `${r.sp.mult > 1 ? '+' : '−'}${Math.round(Math.abs(r.sp.mult - 1) * 100)}% on ${money(r.sub)}. ${r.sp.d}.`, r.total - r.sub]);
+      return `<div class="est-result"><span class="est-kicker">Your estimate</span>
+        <div class="est-amt"><span>${money(r.lo)}</span><i>to</i><span>${money(r.hi)}</span></div>
+        <div class="est-time">${weeksText(r.weeks)} · ${r.sp.t} timeline</div></div>
+      <h4 class="est-bh">How this adds up</h4>
+      <ul class="est-break">${rows.map(([k, d, v]) => `<li><div><b>${k}</b><small>${d}</small></div><span>${v < 0 ? '−' : ''}${money(Math.abs(v))}</span></li>`).join('')}
+        <li class="est-total"><div><b>Estimate</b><small>The range allows for small surprises once we talk.</small></div><span>${money(r.lo)}–${money(r.hi)}</span></li></ul>
+      <div class="est-pay"><div><b>${money(r.lo / 2)}</b><small>to start</small></div><div><b>${money(r.lo / 2)}</b><small>on handoff</small></div></div>
+      <a class="btn btn-accent full est-send" target="_blank" rel="noopener" href="${waMsg(r)}">Send this to me on WhatsApp</a>
+      <p class="est-fine">An estimate, not an invoice. You get a fixed quote within a day.</p>`; },
+  ];
+  function waMsg(r) {
+    return wa(`Hi Jaiye, I used the estimator on your site.\n\nProject: ${r.t.t}\nSize: ${st.size} ${r.t.unit}\nExtras: ${r.extras.map((e) => e.t).join(', ') || 'None'}\nTimeline: ${r.sp.t} (${weeksText(r.weeks)})\nEstimate: ${money(r.lo)} to ${money(r.hi)}${st.note ? `\n\nAbout the project: ${st.note}` : ''}`);
   }
-  $$('[data-k="type"] button', root).forEach((b) => b.addEventListener('click', () => { st.picked = true; setType(b.dataset.v); tick(500); }));
-  $$('.est-speed button', root).forEach((b) => b.addEventListener('click', () => { st.speed = b.dataset.v; update(); tick(600); }));
-  range.addEventListener('input', () => { st.size = +range.value; update(); });
-  note.addEventListener('input', () => {
-    st.note = note.value.trim();
-    const txt = ' ' + st.note.toLowerCase() + ' ';
-    if (!st.picked) {
-      const hit = EST_TYPES.map((t) => [t, Math.max(0, ...t.keys.map((k) => (txt.includes(k) ? k.length : 0)))]).sort((a, b) => b[1] - a[1])[0];
-      if (hit[1] && hit[0].id !== st.type) setType(hit[0].id);
-    }
-    const num = txt.match(/(\d{1,3})\s*(screens?|pages?|slides?|sections?)/);
-    if (num) { const t = T(); const n = Math.max(t.min, Math.min(t.max, +num[1])); if (n !== st.size) { st.size = n; range.value = n; } }
-    if (/\b(urgent|asap|rush|this week)\b/.test(txt)) st.speed = 'rush';
-    update();
-  });
+  const live = () => { const r = calc(); $('.est-live-v', root).textContent = `${money(r.lo)} – ${money(r.hi)}`; };
+  const sizeLine = () => { const t = T(), el = $('.est-note-line', body); if (!el) return; const r = calc();
+    el.innerHTML = r.more ? `${r.more} extra ${r.more > 1 ? t.unit : t.one} × ${money(t.per)} = <b>+${money(r.more * t.per)}</b>` : r.fewer ? `${r.fewer} fewer than included: <b>−${money(r.fewer * t.per * 0.5)}</b>` : 'Exactly what the base price covers. <b>No extra cost.</b>'; };
+  function render(dir) {
+    body.innerHTML = views[st.step]();
+    body.classList.remove('in-l', 'in-r'); void body.offsetWidth; if (dir) body.classList.add(dir > 0 ? 'in-r' : 'in-l');
+    body.scrollTop = 0;
+    $$('.est-steps li', root).forEach((li, i) => { li.classList.toggle('on', i === st.step); li.classList.toggle('done', i < st.step); });
+    $('.est-back', root).style.visibility = st.step ? 'visible' : 'hidden';
+    const nx = $('.est-next', root); nx.textContent = st.step === 3 ? 'See my estimate' : st.step === 4 ? 'Start over' : 'Next';
+    nx.className = 'btn est-next ' + (st.step === 4 ? 'btn-glass' : 'btn-ink');
+    $('.est-live', root).style.visibility = st.step === 4 ? 'hidden' : 'visible';
+    bind(); live(); sizeLine();
+  }
+  const go = (n) => { const d = n - st.step; st.step = Math.max(0, Math.min(4, n)); render(d); tick(520); };
+  function setType(id, keepSize) {
+    st.type = id; const t = T();
+    if (!keepSize) st.size = t.inc;
+    st.size = Math.max(t.min, Math.min(t.max, st.size));
+    const ok = new Set(extrasFor(t).map((e) => e.id)); st.extras.forEach((x) => { if (!ok.has(x)) st.extras.delete(x); });
+  }
+  function bind() {
+    const note = $('#est-note', body);
+    if (note) note.addEventListener('input', () => {
+      st.note = note.value.trim(); const txt = ' ' + st.note.toLowerCase() + ' ';
+      if (!st.picked) { const hit = EST_TYPES.map((t) => [t, Math.max(0, ...t.keys.map((k) => (txt.includes(k) ? k.length : 0)))]).sort((a, b) => b[1] - a[1])[0]; if (hit[1] && hit[0].id !== st.type) setType(hit[0].id); }
+      const num = txt.match(/(\d{1,3})\s*(screens?|pages?|slides?|sections?)/); if (num) { const t = T(); st.size = Math.max(t.min, Math.min(t.max, +num[1])); }
+      if (/\b(urgent|asap|rush|this week)\b/.test(txt)) st.speed = 'rush';
+      $$('[data-type]', body).forEach((b) => b.setAttribute('aria-checked', b.dataset.type === st.type)); live();
+    });
+    $$('[data-type]', body).forEach((b) => b.addEventListener('click', () => { st.picked = true; setType(b.dataset.type); $$('[data-type]', body).forEach((x) => x.setAttribute('aria-checked', x === b)); live(); tick(500); }));
+    const range = $('.est-range', body);
+    const syncSize = () => { const t = T(); $('.est-size-n', body).textContent = st.size; range.value = st.size; range.style.setProperty('--p', ((st.size - t.min) / (t.max - t.min) * 100) + '%'); $$('[data-size]', body).forEach((c) => c.setAttribute('aria-pressed', +c.dataset.size === st.size)); live(); sizeLine(); };
+    if (range) { range.addEventListener('input', () => { st.size = +range.value; syncSize(); }); syncSize(); }
+    $$('[data-size]', body).forEach((c) => c.addEventListener('click', () => { st.size = +c.dataset.size; syncSize(); tick(500); }));
+    $$('.est-x input', body).forEach((c) => c.addEventListener('change', () => { c.checked ? st.extras.add(c.value) : st.extras.delete(c.value); live(); }));
+    $$('[data-speed]', body).forEach((b) => b.addEventListener('click', () => { st.speed = b.dataset.speed; $$('[data-speed]', body).forEach((x) => x.setAttribute('aria-checked', x === b)); live(); tick(500); }));
+  }
+  $('.est-next', root).addEventListener('click', () => (st.step === 4 ? (Object.assign(st, { extras: new Set(), speed: 'standard', note: '', picked: false }), setType('app'), go(0)) : go(st.step + 1)));
+  $('.est-back', root).addEventListener('click', () => go(st.step - 1));
+  $$('.est-steps li', root).forEach((li) => li.addEventListener('click', () => { const i = +li.dataset.i; if (i < st.step) go(i); }));
   document.addEventListener('click', (e) => {
     const a = e.target.closest('[data-est]'); if (!a) return;
-    e.preventDefault(); st.picked = true; st.extras.clear(); st.speed = 'standard'; setType(a.dataset.est);
-    root.scrollIntoView({ behavior: motionOn() ? 'smooth' : 'auto', block: 'start' });
+    e.preventDefault(); if (window.closeMenu) window.closeMenu();
+    if (a.dataset.est) { st.picked = true; st.extras.clear(); st.speed = 'standard'; setType(a.dataset.est); st.step = 1; } else st.step = 0;
+    render(0); openSheet('estimate');
+    setTimeout(() => { const n = $('#est-note', root); (innerWidth > 640 && n ? n : root).focus({ preventScroll: true }); }, 60);
   });
-  setType(st.type);
-  return { update };
+  setType(st.type); render(0);
+  return { update: () => { if (!sheet.hidden) render(0); } };
 }
 
 function renderBlog() {
@@ -876,9 +895,13 @@ function initScroll() {
 }
 
 function initMenu() {
-  const btn = $('[data-menu]'), menu = $('.mobile-menu');
-  const set = (open) => { btn.setAttribute('aria-expanded', open); menu.hidden = !open; };
+  const btn = $('[data-menu]'), menu = $('.mobile-menu'), scrim = $('.mm-scrim');
+  const set = (open) => {
+    btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menu.hidden = !open; scrim.hidden = !open; document.documentElement.classList.toggle('menu-open', open);
+  };
   btn.addEventListener('click', () => { set(menu.hidden); tick(); });
+  scrim.addEventListener('click', () => set(false));
   $$('a', menu).forEach((a) => a.addEventListener('click', () => set(false)));
   window.closeMenu = () => set(false);
 }
