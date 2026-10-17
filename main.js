@@ -71,7 +71,33 @@ const PRICES = [
   { t: 'Mobile app design', usd: 500, time: '3 to 4 weeks', hot: true, gets: ['Research summary and user flows', 'Sitemap and information architecture', 'Up to 25 screens, iOS and Android', 'Design system and components', 'Clickable prototype', 'Developer handoff and QA'] },
   { t: 'Dashboard or SaaS', usd: 600, time: '4 to 5 weeks', gets: ['Discovery workshop with your team', 'Data and permissions mapping', 'Up to 20 dashboard screens', 'Component library', 'Prototype of key flows', 'Handoff and design QA'] },
   { t: 'Game UI', usd: 300, time: '2 to 3 weeks', gets: ['HUD, menus and key screens', 'UI kit with states', 'Icon set', 'Clickable prototype', 'Source files'] },
-  { t: 'Full website project', usd: 400, time: '3 to 4 weeks', web: true, badge: 'Design and build', gets: ['Up to 6 pages, designed and built', 'Live, fast and responsive site', 'Scroll animations and interactions', 'Editable content (CMS)', 'Domain setup, SEO basics and analytics', '30 days of support after launch'] },
+  { t: 'Full website project', custom: true, time: 'Scoped to your project', web: true, badge: 'Design and build', gets: ['Up to 6 pages, designed and built', 'Live, fast and responsive site', 'Scroll animations and interactions', 'Editable content (CMS)', 'Domain setup, SEO basics and analytics', '30 days of support after launch'] },
+];
+/* Estimator: base price covers `inc` units; each extra unit adds `per`. Weeks scale with size. */
+const EST_TYPES = [
+  { id: 'landing', t: 'Landing page', base: 150, unit: 'sections', inc: 6, per: 15, min: 3, max: 14, weeks: 1, keys: ['landing', 'one page', 'one-page', 'waitlist', 'launch page'] },
+  { id: 'website', t: 'Full website', base: 400, unit: 'pages', inc: 5, per: 50, min: 1, max: 20, weeks: 3, build: true, keys: ['website', 'site', 'webflow', 'framer', 'portfolio', 'company site', 'blog'] },
+  { id: 'app', t: 'Mobile app', base: 500, unit: 'screens', inc: 25, per: 14, min: 8, max: 70, weeks: 3.5, keys: ['app', 'mobile', 'ios', 'android'] },
+  { id: 'dashboard', t: 'Dashboard or SaaS', base: 600, unit: 'screens', inc: 20, per: 22, min: 6, max: 60, weeks: 4.5, keys: ['dashboard', 'saas', 'admin', 'analytics', 'web app', 'platform', 'crm'] },
+  { id: 'brand', t: 'Brand identity', base: 200, unit: 'brand assets', inc: 6, per: 20, min: 2, max: 16, weeks: 2, keys: ['brand', 'logo', 'identity', 'branding'] },
+  { id: 'deck', t: 'Pitch deck or PRD', base: 120, unit: 'slides', inc: 15, per: 6, min: 5, max: 40, weeks: 1, keys: ['deck', 'pitch', 'prd', 'slides', 'presentation', 'investor'] },
+  { id: 'game', t: 'Game UI', base: 300, unit: 'screens', inc: 12, per: 18, min: 4, max: 40, weeks: 2.5, keys: ['game', 'hud', 'gaming'] },
+];
+const EST_EXTRAS = [
+  { id: 'research', t: 'User research and interviews', usd: 120, not: ['deck'] },
+  { id: 'system', t: 'Design system and components', usd: 150, only: ['app', 'dashboard', 'website', 'game'] },
+  { id: 'copy', t: 'Copywriting', usd: 80 },
+  { id: 'motion', t: 'Motion and micro-interactions', usd: 90 },
+  { id: 'build', t: 'Build it live (no-code)', usd: 220, only: ['landing'] },
+  { id: 'logo', t: 'Logo and brand starter', usd: 120, not: ['brand'] },
+  { id: 'illus', t: 'Custom illustrations or 3D', usd: 110 },
+  { id: 'handoff', t: 'Developer handoff and QA', usd: 70, not: ['website', 'deck'] },
+];
+const EST_SPEED = [
+  { id: 'relaxed', t: 'Flexible', note: 'No rush', mult: 0.92, time: 1.3 },
+  { id: 'standard', t: 'Standard', note: 'Normal pace', mult: 1, time: 1 },
+  { id: 'fast', t: 'Fast', note: '+25%', mult: 1.25, time: 0.7 },
+  { id: 'rush', t: 'Rush', note: '+50%', mult: 1.5, time: 0.5 },
 ];
 const CUR = [['USD', 'US dollar', 1], ['GBP', 'British pound', 0.75], ['EUR', 'Euro', 0.86], ['NGN', 'Nigerian naira', 1460], ['CAD', 'Canadian dollar', 1.38]];
 
@@ -307,8 +333,10 @@ function renderPricing() {
   grid.innerHTML = PRICES.map((p) => {
     const list = `<ul>${p.gets.map((g) => `<li>${check}<span>${g}</span></li>`).join('')}</ul>`;
     const head = `<div class="p-top"><h3>${p.t}</h3>${p.hot ? '<span class="badge">Most booked</span>' : ''}${p.badge ? `<span class="badge">${p.badge}</span>` : ''}</div>
-      <div class="from">Starting from</div><div class="amt" data-usd="${p.usd}">$${p.usd}</div><div class="time">${p.time}</div>`;
-    const btn = `<a class="btn ${p.hot ? 'btn-accent' : 'btn-glass'}" target="_blank" rel="noopener" href="${wa(`Hi Jaiye, I'd like a quote for: ${p.t}.`)}">Start on WhatsApp</a>`;
+      ${p.custom ? '<div class="from">Priced for your scope</div><div class="amt custom">Custom quote</div>' : `<div class="from">Starting from</div><div class="amt" data-usd="${p.usd}">$${p.usd}</div>`}<div class="time">${p.time}</div>`;
+    const btn = p.custom
+      ? `<a class="btn btn-glass" href="#estimate" data-est="website">Get a quote</a>`
+      : `<a class="btn ${p.hot ? 'btn-accent' : 'btn-glass'}" target="_blank" rel="noopener" href="${wa(`Hi Jaiye, I'd like a quote for: ${p.t}.`)}">Start on WhatsApp</a>`;
     if (p.web) return `<div class="price web" data-reveal><div>${head}${btn}</div><div><div class="gets">What you get</div>${list}</div></div>`;
     return `<div class="price glass${p.hot ? ' hot' : ''}" data-reveal>${head}<div class="gets">What you get</div>${list}${btn}</div>`;
   }).join('');
@@ -320,12 +348,14 @@ function renderPricing() {
   const apply = (animate) => {
     $$('button', pills).forEach((b) => b.setAttribute('aria-checked', b.dataset.c === cur));
     movePill();
-    $$('.amt', grid).forEach((a) => {
+    $$('.amt[data-usd]', grid).forEach((a) => {
       const v = fmt(nice(+a.dataset.usd * rates[cur], cur), cur);
       if (animate && motionOn()) { a.classList.remove('flip'); void a.offsetWidth; a.classList.add('flip'); setTimeout(() => (a.textContent = v), 140); }
       else a.textContent = v;
     });
+    if (est) est.update();
   };
+  const est = initEstimator(() => cur);
   const setCur = (c, fromPill) => {
     cur = c; S.currency = c; save();
     if (fromPill && (COUNTRIES.find(([n]) => n === sel.value) || [])[1] !== c) sel.value = (COUNTRIES.find(([, cc]) => cc === c) || COUNTRIES[0])[0];
@@ -342,6 +372,106 @@ function renderPricing() {
   fetch('https://open.er-api.com/v6/latest/USD').then((r) => (r.ok ? r.json() : null)).then((j) => {
     if (j && j.rates) { CUR.forEach(([c]) => { if (j.rates[c]) rates[c] = j.rates[c]; }); apply(false); }
   }).catch(() => {});
+}
+
+/* Price estimator: pick a project, size, extras and pace; get a live range in the chosen currency */
+function initEstimator(getCur) {
+  const root = $('#estimate'); if (!root) return null;
+  const st = { type: 'app', size: 25, extras: new Set(), speed: 'standard', note: '', picked: false };
+  const T = () => EST_TYPES.find((x) => x.id === st.type);
+  const extrasFor = (t) => EST_EXTRAS.filter((e) => (!e.only || e.only.includes(t.id)) && (!e.not || !e.not.includes(t.id)));
+  root.innerHTML = `
+    <div class="est-form">
+      <div class="est-head"><h3>Get an instant estimate</h3><p>Pick what you need. The price updates as you go.</p></div>
+      <label class="est-field"><span class="est-label">What are you building?</span>
+        <textarea id="est-note" rows="2" placeholder="e.g. A mobile app for booking barbers, about 20 screens" maxlength="400"></textarea></label>
+      <div class="est-field"><span class="est-label">Project type</span><div class="est-chips" data-k="type" role="radiogroup" aria-label="Project type">
+        ${EST_TYPES.map((t) => `<button type="button" role="radio" data-v="${t.id}">${t.t}</button>`).join('')}</div></div>
+      <div class="est-field"><span class="est-label">Size <b class="est-size-v"></b></span>
+        <input type="range" class="est-range" aria-label="Project size"><div class="est-hint"></div></div>
+      <div class="est-field"><span class="est-label">Add-ons</span><div class="est-extras"></div></div>
+      <div class="est-field"><span class="est-label">Timeline</span><div class="est-speed" role="radiogroup" aria-label="Timeline">
+        ${EST_SPEED.map((s) => `<button type="button" role="radio" data-v="${s.id}"><b>${s.t}</b><small>${s.note}</small></button>`).join('')}</div></div>
+    </div>
+    <aside class="est-out" aria-live="polite"><div class="est-stick">
+      <span class="est-kicker">Your estimate</span>
+      <div class="est-amt"><span class="est-lo"></span><i>to</i><span class="est-hi"></span></div>
+      <div class="est-time"></div>
+      <ul class="est-break"></ul>
+      <a class="btn btn-ink full est-send" target="_blank" rel="noopener" href="#">Send this to me on WhatsApp</a>
+      <p class="est-fine">An estimate, not an invoice. You get a fixed quote within a day. Half to start, half on handoff.</p>
+    </div></aside>`;
+  const range = $('.est-range', root), note = $('#est-note', root);
+  const shown = { lo: 0, hi: 0 };
+  const money = (usd) => { const c = getCur(); return fmt(nice(usd * rates[c], c), c); };
+  const animateTo = (el, key, target) => {
+    const from = shown[key]; shown[key] = target;
+    if (!motionOn() || !from) { el.textContent = money(target); return; }
+    const t0 = performance.now(), d = 450;
+    const step = (now) => { const k = Math.min(1, (now - t0) / d), e = 1 - Math.pow(1 - k, 3); el.textContent = money(from + (target - from) * e); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+  const setType = (id, keepSize) => {
+    st.type = id; const t = T();
+    range.min = t.min; range.max = t.max; range.step = 1;
+    if (!keepSize) st.size = t.inc;
+    st.size = Math.max(t.min, Math.min(t.max, st.size)); range.value = st.size;
+    const ok = new Set(extrasFor(t).map((e) => e.id)); st.extras.forEach((x) => { if (!ok.has(x)) st.extras.delete(x); });
+    $('.est-extras', root).innerHTML = extrasFor(t).map((e) => `<label class="est-x"><input type="checkbox" value="${e.id}" ${st.extras.has(e.id) ? 'checked' : ''}><span>${e.t}</span><em data-usd="${e.usd}"></em></label>`).join('');
+    $$('.est-x input', root).forEach((c) => c.addEventListener('change', () => { c.checked ? st.extras.add(c.value) : st.extras.delete(c.value); update(); }));
+    update();
+  };
+  const calc = () => {
+    const t = T(), sp = EST_SPEED.find((s) => s.id === st.speed);
+    const extraUnits = Math.max(0, st.size - t.inc);
+    const sizeCost = extraUnits * t.per - Math.max(0, t.inc - st.size) * t.per * 0.5;
+    const extras = [...st.extras].map((id) => EST_EXTRAS.find((e) => e.id === id));
+    const sub = t.base + sizeCost + extras.reduce((a, e) => a + e.usd, 0);
+    const total = Math.max(t.base * 0.6, sub) * sp.mult;
+    const weeks = Math.max(0.5, t.weeks * (0.6 + 0.4 * st.size / t.inc) * sp.time + extras.length * 0.15);
+    return { t, sp, sizeCost, extras, total, lo: total, hi: total * 1.2, weeks };
+  };
+  const weeksText = (w) => { if (w < 1) return 'About ' + Math.max(3, Math.round(w * 7)) + ' days'; const a = Math.max(1, Math.floor(w)), b = Math.max(a + 1, Math.ceil(w)); return a === b ? `About ${a} week${a > 1 ? 's' : ''}` : `${a} to ${b} weeks`; };
+  function update() {
+    const r = calc(), t = r.t;
+    $$('[data-k="type"] button', root).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === st.type));
+    $$('.est-speed button', root).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === st.speed));
+    $('.est-size-v', root).textContent = `${st.size} ${t.unit}`;
+    $('.est-hint', root).textContent = `${t.inc} ${t.unit} included in the base price`;
+    range.style.setProperty('--p', ((st.size - t.min) / (t.max - t.min) * 100) + '%');
+    $$('.est-x em', root).forEach((e) => (e.textContent = '+' + money(+e.dataset.usd)));
+    animateTo($('.est-lo', root), 'lo', r.lo); animateTo($('.est-hi', root), 'hi', r.hi);
+    $('.est-time', root).textContent = `${weeksText(r.weeks)} · ${r.sp.t.toLowerCase()} timeline`;
+    const rows = [[`${t.t} base`, t.base]];
+    if (r.sizeCost) rows.push([`${r.sizeCost > 0 ? 'Extra' : 'Fewer'} ${t.unit}`, r.sizeCost]);
+    r.extras.forEach((e) => rows.push([e.t, e.usd]));
+    if (r.sp.mult !== 1) rows.push([`${r.sp.t} timeline`, r.total - r.total / r.sp.mult]);
+    $('.est-break', root).innerHTML = rows.map(([k, v]) => `<li><span>${k}</span><b>${v < 0 ? '−' : ''}${money(Math.abs(v))}</b></li>`).join('');
+    const msg = `Hi Jaiye, I used the estimator on your site.\n\nProject: ${t.t}\nSize: ${st.size} ${t.unit}\nAdd-ons: ${r.extras.map((e) => e.t).join(', ') || 'None'}\nTimeline: ${r.sp.t}\nEstimate: ${money(r.lo)} to ${money(r.hi)}${st.note ? `\n\nAbout the project: ${st.note}` : ''}`;
+    $('.est-send', root).href = wa(msg);
+  }
+  $$('[data-k="type"] button', root).forEach((b) => b.addEventListener('click', () => { st.picked = true; setType(b.dataset.v); tick(500); }));
+  $$('.est-speed button', root).forEach((b) => b.addEventListener('click', () => { st.speed = b.dataset.v; update(); tick(600); }));
+  range.addEventListener('input', () => { st.size = +range.value; update(); });
+  note.addEventListener('input', () => {
+    st.note = note.value.trim();
+    const txt = ' ' + st.note.toLowerCase() + ' ';
+    if (!st.picked) {
+      const hit = EST_TYPES.map((t) => [t, Math.max(0, ...t.keys.map((k) => (txt.includes(k) ? k.length : 0)))]).sort((a, b) => b[1] - a[1])[0];
+      if (hit[1] && hit[0].id !== st.type) setType(hit[0].id);
+    }
+    const num = txt.match(/(\d{1,3})\s*(screens?|pages?|slides?|sections?)/);
+    if (num) { const t = T(); const n = Math.max(t.min, Math.min(t.max, +num[1])); if (n !== st.size) { st.size = n; range.value = n; } }
+    if (/\b(urgent|asap|rush|this week)\b/.test(txt)) st.speed = 'rush';
+    update();
+  });
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('[data-est]'); if (!a) return;
+    e.preventDefault(); st.picked = true; st.extras.clear(); st.speed = 'standard'; setType(a.dataset.est);
+    root.scrollIntoView({ behavior: motionOn() ? 'smooth' : 'auto', block: 'start' });
+  });
+  setType(st.type);
+  return { update };
 }
 
 function renderBlog() {
