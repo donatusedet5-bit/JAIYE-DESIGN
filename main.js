@@ -451,10 +451,9 @@ function playSlides(card, on) {
   };
   box._show = show; box._idx = () => i;
   if (!on) return;
-  if (innerWidth <= 640) return;
   load((i + 1) % imgs.length);
   if (!motionOn()) return;
-  slideTimers.set(card, setInterval(() => { if (!document.hidden && box.getBoundingClientRect().top < innerHeight) show(i + 1); }, 2600));
+  slideTimers.set(card, setInterval(() => { const r = box.getBoundingClientRect(); if (!document.hidden && r.top < innerHeight && r.bottom > 0) show(i + 1); }, 2600));
 }
 
 function initDecks() {
@@ -465,7 +464,34 @@ function initDecks() {
     let active = -1;
     const STEP = () => (innerWidth < 640 ? 220 : 260);
     const HEAD = () => (innerWidth < 640 ? 56 : 62);
+    const phone = () => innerWidth <= 640;
+    // Phone carousel: swipe between cards, dots + arrows, the card in view plays its screens
+    const nav = document.createElement('div');
+    nav.className = 'car-nav';
+    nav.innerHTML = `<button class="car-btn" data-dir="-1" aria-label="Previous project">←</button><span class="car-dots">${cards.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</span><button class="car-btn" data-dir="1" aria-label="Next project">→</button>`;
+    deck.appendChild(nav);
+    const dots = $$('.car-dots i', nav), [prevB, nextB] = $$('.car-btn', nav);
+    let cur = -1;
+    const setCur = (k) => {
+      if (k === cur) return;
+      if (cur >= 0) playSlides(cards[cur], false);
+      cur = k; playSlides(cards[k], true);
+      dots.forEach((d, i) => d.classList.toggle('on', i === k));
+      prevB.disabled = k === 0; nextB.disabled = k === n - 1;
+      $$('.fact b', cards[k]).forEach((b) => countUp(b));
+    };
+    const goTo = (k) => { const c = cards[Math.max(0, Math.min(n - 1, k))]; stage.scrollTo({ left: c.offsetLeft - (stage.clientWidth - c.offsetWidth) / 2, behavior: motionOn() ? 'smooth' : 'auto' }); };
+    nav.addEventListener('click', (e) => { const b = e.target.closest('.car-btn'); if (b) goTo(cur + Number(b.dataset.dir)); });
+    stage.addEventListener('scroll', () => requestAnimationFrame(() => {
+      if (!phone()) return;
+      const mid = stage.scrollLeft + stage.clientWidth / 2;
+      let best = 0, bd = Infinity;
+      cards.forEach((c, i) => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = i; } });
+      setCur(best);
+    }), { passive: true });
     const layout = (force) => {
+      if (phone()) { if (cur < 0) setCur(0); return; }
+      if (cur >= 0) { playSlides(cards[cur], false); cur = -1; active = -1; }
       const H = stage.clientHeight; if (!H) return;
       spacer.style.height = (H + (n - 1) * STEP()) + 'px';
       const idx = Math.max(0, Math.min(n - 1, Math.round(sc.scrollTop / STEP())));
