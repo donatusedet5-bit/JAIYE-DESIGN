@@ -546,7 +546,7 @@ function initSettings() {
   $('[data-reset]').addEventListener('click', () => { S = {}; save(); root.style.removeProperty('--accent'); root.dataset.glass = 'on'; root.dataset.motion = 'on'; root.dataset.theme = 'light'; sync(); toast('Settings reset'); });
   window.setTheme = (v) => {
     const doIt = () => { root.dataset.theme = v; S.theme = v; save(); sync(); };
-    if (document.startViewTransition && motionOn()) document.startViewTransition(doIt); else doIt();
+    doIt();
     tick();
   };
   window.syncSettings = sync;
