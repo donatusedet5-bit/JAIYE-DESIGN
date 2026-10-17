@@ -53,7 +53,7 @@
       <span>jaiye</span>
     </a>
     <div class="nav-links">
-      <a href="#work">Work</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#pricing">Pricing</a><a href="#blog">Blog</a><a href="#faq">FAQ</a>
+      <a href="#work">Work</a><a href="work/index.html">Case studies</a><a href="#about">About</a><a href="#pricing">Pricing</a><a href="#blog">Blog</a><a href="#faq">FAQ</a>
     </div>
     <div class="nav-actions">
       <button class="icon-btn kbd-btn" data-open="cmdk" aria-label="Open command menu"><span class="kbd">⌘K</span></button>
@@ -67,7 +67,7 @@
     </div>
   </nav>
   <div class="mobile-menu glass" hidden>
-    <a href="#work">Work</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#pricing">Pricing</a><a href="#blog">Blog</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
+    <a href="#work">Work</a><a href="work/index.html">Case studies</a><a href="#about">About</a><a href="#pricing">Pricing</a><a href="#blog">Blog</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
     <div class="mm-row">
       <a class="btn btn-accent" data-wa href="#">WhatsApp me</a>
       <a class="btn btn-glass" href="cv/Jaiye_Oluwatishe_Daniel_CV.pdf" download>Download CV</a>
@@ -88,10 +88,13 @@
         <a class="btn btn-glass btn-lg magnetic" data-wa href="#"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>WhatsApp me</a>
       </div>
     </div>
-    <div class="fan-wrap" data-reveal style="--d:.6s">
-      <div class="fan" aria-label="Featured projects. Select to see the next one." role="button" tabindex="0"></div>
-      <p class="fan-cap glass"><b class="fan-name">Staza</b><span class="fan-line">Marketplace that holds your money until delivery</span></p>
-    </div>
+    <ul class="hero-facts" data-reveal style="--d:.45s">
+      <li><b>4+</b><span>years designing</span></li>
+      <li><b data-count-projects>23</b><span>projects, real screens</span></li>
+      <li><b>WAT</b><span>Lagos, works worldwide</span></li>
+      <li><b>Open</b><span>to product design roles</span></li>
+    </ul>
+    <div class="wall" aria-hidden="true"><div class="wall-tilt"><div class="wall-row wr1"></div><div class="wall-row wr2"></div></div></div>
   </section>
 
   <!-- Worked with -->
@@ -107,13 +110,14 @@
   <section id="work" class="section work" aria-labelledby="work-title">
     <div class="sec-head">
       <p class="eyebrow">Selected work</p>
-      <h2 id="work-title" data-split>Twenty projects, sorted by what they are.</h2>
-      <p class="lede" data-reveal>Pick a section. Scroll inside the deck: one card opens, the rest stay folded.</p>
+      <h2 id="work-title" data-split>Real projects, sorted by what they are.</h2>
+      <p class="lede" data-reveal>Pick a section and scroll inside the deck: one card opens and plays its screens, the rest stay folded. Every project has its own case study page.</p>
     </div>
     <div class="tabs-wrap">
       <div class="tabs glass" role="tablist" aria-label="Work sections"></div>
     </div>
     <div class="panels"></div>
+    <div class="work-all"><a class="btn btn-glass btn-lg" href="work/index.html">See all projects on one page →</a></div>
   </section>
 
   <!-- ABOUT -->
@@ -130,8 +134,17 @@
         <p data-reveal>Outside product work I make brands, motion and game interfaces. They keep my craft sharp, and they come back into the product work.</p>
         <div class="stats" data-reveal>
           <div class="stat glass"><b data-count="4">0</b><span>+ years designing</span></div>
-          <div class="stat glass"><b data-count="20">0</b><span>projects shipped or concepted</span></div>
+          <div class="stat glass"><b data-count="23">0</b><span>projects with real screens</span></div>
           <div class="stat glass"><b data-count="7">0</b><span>teams worked with</span></div>
+        </div>
+        <div class="roles glass" data-reveal>
+          <div class="roles-head"><span class="pulse"></span><b>For hiring teams</b></div>
+          <dl>
+            <div><dt>Roles I'm open to</dt><dd>Product Designer, UI/UX Designer, design-led Product Manager</dd></div>
+            <div><dt>Work setup</dt><dd>Remote or hybrid · full-time, contract or freelance</dd></div>
+            <div><dt>Time zone</dt><dd>WAT (UTC+1), with overlap for Europe and the US East Coast</dd></div>
+            <div><dt>Strongest in</dt><dd>Fintech, SaaS dashboards, marketplaces, Web3</dd></div>
+          </dl>
         </div>
         <div class="cta-row left" data-reveal>
           <a class="btn btn-ink" href="cv/Jaiye_Oluwatishe_Daniel_CV.pdf" download><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Download CV</a>
@@ -190,14 +203,10 @@
   <section id="pricing" class="section pricing" aria-labelledby="pricing-title">
     <div class="sec-head">
       <p class="eyebrow">Pricing</p>
-      <h2 id="pricing-title" data-split>Fair starting prices, fixed before we begin.</h2>
-      <p class="lede" data-reveal>You get a fixed quote on WhatsApp before any work starts. Pay in parts: half to start, half on handoff.</p>
+      <h2 id="pricing-title" data-split>Simple starting prices, in your currency.</h2>
+      <p class="lede" data-reveal>Every card shows dollars, naira, pounds and euros. You get a fixed quote before any work starts, and you pay half to start, half on handoff.</p>
     </div>
-    <div class="currency glass" data-reveal>
-      <label for="cur">Show prices in</label>
-      <select id="cur" aria-label="Currency"></select>
-      <span class="cur-note">Converted at today's rate. Your quote comes in your currency.</span>
-    </div>
+    <p class="rate-note" data-reveal><span class="pulse"></span><span class="rate-txt">Converted at today's rate</span></p>
     <div class="price-grid"></div>
   </section>
 
@@ -338,6 +347,7 @@
 
 <div class="toast glass" role="status" aria-live="polite"></div>
 
-<script src="app.js" defer></script>
+<script src="data.js" defer></script>
+<script src="main.js" defer></script>
 </body>
 </html>
