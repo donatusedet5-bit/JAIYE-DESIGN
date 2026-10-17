@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-glass="on" data-motion="on">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboards people read, not just look at · Jaiye Oluwatishe</title>
+<meta name="description" content="Start every chart with the decision it should help someone make.">
+<meta property="og:title" content="Dashboards people read, not just look at"><meta property="og:description" content="Start every chart with the decision it should help someone make.">
+<meta property="og:image" content="https://jaiyedesigns.vercel.app/img/og.jpg">
+<meta name="author" content="Jaiye Oluwatishe Daniel">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap">
+<link rel="stylesheet" href="../styles.css">
+<script>try{const s=JSON.parse(localStorage.getItem('jaiye-settings')||'{}');const r=document.documentElement;const dark=s.theme?s.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'dark':'light';if(s.glass)r.dataset.glass=s.glass;if(s.accent)r.style.setProperty('--accent',s.accent);}catch(e){}</script>
+<style>
+.article{max-width:720px;margin:0 auto;padding:130px var(--gutter) 60px}
+.article .eyebrow{display:flex}
+.article .back{display:inline-flex;gap:8px;align-items:center;font-weight:600;font-size:15px;color:var(--ink-2);padding:8px 14px;border-radius:999px;margin-bottom:28px}
+.article h1{font-size:clamp(38px,6vw,64px);letter-spacing:-.045em;line-height:1.02;margin:10px 0 24px}
+.article .byline{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted);padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:34px}
+.article .byline img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.article .byline b{display:block;color:var(--ink);font-size:15px}
+.prose p,.prose li{font-size:19px;line-height:1.7;color:var(--ink-2)}
+.prose p{margin:0 0 22px}
+.prose .lead{font-size:23px;line-height:1.5;color:var(--ink);font-weight:500;letter-spacing:-.01em}
+.prose h2{font-size:clamp(26px,3vw,32px);letter-spacing:-.03em;margin:42px 0 14px;color:var(--ink)}
+.prose ul{margin:0 0 24px;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.prose b{color:var(--ink)}
+.more{max-width:720px;margin:0 auto;padding:0 var(--gutter) 120px}
+.more .card-cta{display:flex;flex-wrap:wrap;gap:10px;padding:26px;border-radius:var(--r-lg);align-items:center;justify-content:space-between}
+.more h3{font-size:24px}
+.more p{color:var(--muted)}
+.more .links{margin-top:30px;display:flex;flex-direction:column;gap:10px}
+.more .links a{display:flex;justify-content:space-between;gap:12px;padding:18px 20px;border-radius:var(--r);font-weight:700}
+.more .links a span{color:var(--muted);font-weight:500;font-size:14px;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="grain"></span></div>
+<header class="island-wrap"><nav class="island glass" aria-label="Main">
+<a href="../" class="brand" aria-label="Jaiye, home"><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="10" fill="var(--ink)"/><path d="M19.5 8v10.2c0 3.3-2.3 5.8-5.6 5.8-1.9 0-3.4-.8-4.4-2.1" fill="none" stroke="var(--bg)" stroke-width="3" stroke-linecap="round"/><circle cx="23.4" cy="9.2" r="2.2" fill="var(--accent)"/></svg><span>jaiye</span></a>
+<div class="nav-actions"><a class="btn btn-glass btn-sm" href="../#blog">All articles</a><a class="btn btn-ink btn-sm" target="_blank" rel="noopener" href="https://wa.me/2348026364572?text=Hi%20Jaiye%2C%20I%20just%20read%20your%20article.">Hire me</a></div>
+</nav></header>
+<main>
+<article class="article">
+<a class="back glass" href="../#blog">← Back to the blog</a>
+<p class="eyebrow">SaaS</p>
+<h1>Dashboards people read, not just look at</h1>
+<div class="byline"><img src="../img/me.webp" alt=""><span><b>Jaiye Oluwatishe</b>Product designer · Oct 2026 · 7 min read</span></div>
+<div class="prose">
+<p class="lead">Most dashboards are built from what the database has. Good dashboards are built from what someone needs to decide on Monday morning.</p>
+<p>On Fanfare, a creator-marketing tool, the first version had twelve charts on the overview. Brand managers opened it, scrolled, and exported a CSV to answer one question: <i>was this campaign worth the money?</i></p>
+<h2>Write the decision first</h2>
+<p>For every chart, write one sentence: "This helps [person] decide [what]." If you can't finish the sentence, the chart goes. On Fanfare that cut the overview from twelve charts to four.</p>
+<h2>Lead with the answer</h2>
+<p>Put the number that answers the main question at the top, large, with its context: return on spend, compared with last campaign, and whether that's good. A big number with no comparison is just decoration.</p>
+<h2>One chart, one message</h2>
+<ul>
+<li>Use a line for change over time and a bar for comparing things.</li>
+<li>Label the line directly instead of using a legend.</li>
+<li>Highlight the one series that matters and grey out the rest.</li>
+<li>Write the takeaway as the chart title: "Renewals up 18% since the price change", not "Renewals".</li>
+</ul>
+<h2>Make the next step obvious</h2>
+<p>A dashboard should end in an action. If a creator's posts are underperforming, the row should let you pause them or message them right there, not send you to another tool.</p>
+<h2>Check it with a five-second test</h2>
+<p>Show the dashboard for five seconds, hide it, and ask what's going on. If people can tell you the main number and whether it's good, the dashboard works. If they describe colours and shapes, start again from the decision.</p>
+</div>
+</article>
+<section class="more">
+<div class="card-cta glass"><div><h3>Working on something like this?</h3><p>I reply within a day with a few questions and a fixed quote.</p></div><a class="btn btn-accent" target="_blank" rel="noopener" href="https://wa.me/2348026364572?text=Hi%20Jaiye%2C%20I%20just%20read%20your%20article%20and%20I%27d%20like%20to%20talk.">WhatsApp me</a></div>
+<div class="links"><a class="glass" href="checkout-trust.html">Why checkout loses trust in three taps<span>6 min read →</span></a><a class="glass" href="sitemap-saves-a-sprint.html">A sitemap saves you a sprint<span>5 min read →</span></a></div>
+</section>
+</main>
+<footer class="footer"><div class="foot-grid"><div><a href="../" class="brand big">jaiye<span>.</span></a><p>© 2026 Jaiye Oluwatishe Daniel · jaiyedesigns.vercel.app</p></div><nav aria-label="Footer"><a href="../#work">Work</a><a href="../#pricing">Pricing</a><a href="../#blog">Blog</a><a href="../#contact">Contact</a></nav><div></div></div></footer>
+</body>
+</html>
