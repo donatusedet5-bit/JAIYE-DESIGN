@@ -20,9 +20,9 @@
 <script>
   // Apply saved settings before paint so there is no flash.
   try{const s=JSON.parse(localStorage.getItem('jaiye-settings')||'{}');const r=document.documentElement;
-    const dark=s.theme?s.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    const dark=s.theme==='dark';
     r.dataset.theme=dark?'dark':'light';if(s.glass)r.dataset.glass=s.glass;
-    const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=s.motion||(reduce?'off':'on');
+    const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=s.motion||'on';
     if(s.accent)r.style.setProperty('--accent',s.accent);}catch(e){}
 </script>
 </head>
@@ -34,6 +34,8 @@
 </svg>
 
 <a class="skip" href="#work">Skip to work</a>
+<div class="scroll-prog" aria-hidden="true"></div>
+<a class="to-top glass" href="#top" aria-label="Back to top">↑</a>
 
 <!-- Ambient background -->
 <div class="ambient" aria-hidden="true">
@@ -90,7 +92,7 @@
     </div>
     <ul class="hero-facts" data-reveal style="--d:.45s">
       <li><b>4+</b><span>years designing</span></li>
-      <li><b data-count-projects>23</b><span>projects, real screens</span></li>
+      <li><b data-count-projects>24</b><span>projects, real screens</span></li>
       <li><b>WAT</b><span>Lagos, works worldwide</span></li>
       <li><b>Open</b><span>to product design roles</span></li>
     </ul>
@@ -134,7 +136,7 @@
         <p data-reveal>Outside product work I make brands, motion and game interfaces. They keep my craft sharp, and they come back into the product work.</p>
         <div class="stats" data-reveal>
           <div class="stat glass"><b data-count="4">0</b><span>+ years designing</span></div>
-          <div class="stat glass"><b data-count="23">0</b><span>projects with real screens</span></div>
+          <div class="stat glass"><b data-count="24">0</b><span>projects with real screens</span></div>
           <div class="stat glass"><b data-count="7">0</b><span>teams worked with</span></div>
         </div>
         <div class="roles glass" data-reveal>

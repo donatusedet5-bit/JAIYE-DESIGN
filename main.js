@@ -136,13 +136,13 @@ addEventListener('pageshow', () => { const b = $('#case'); if (b) { b.classList.
 function renderWA() { $$('[data-wa]').forEach((a) => { a.href = wa(a.dataset.waMsg); a.target = '_blank'; a.rel = 'noopener'; }); }
 
 function renderTools() {
-  const chip = (t, dup) => `<span class="tool glass${dup ? ' dup' : ''}" ${dup ? 'aria-hidden="true"' : ''} style="left:${t[2]}%;top:${t[3]}%;--rot:${t[4]}deg;--dur:${5 + (t[2] % 4)}s;--delay:-${t[3] % 6}s"><span class="g"><img src="img/tools/${t[1]}.svg" alt="" width="18" height="18"></span>${t[0]}</span>`;
-  $('.tools').innerHTML = `<div class="tool-track">${TOOLS.map((t) => chip(t)).join('')}${TOOLS.map((t) => chip(t, true)).join('')}</div>`;
+  const chip = (t, dup, i = 0) => `<span class="tool glass${dup ? ' dup' : ''}" ${dup ? 'aria-hidden="true"' : ''} style="--i:${i};left:${t[2]}%;top:${t[3]}%;--rot:${t[4]}deg;--dur:${5 + (t[2] % 4)}s;--delay:-${t[3] % 6}s"><span class="g"><img src="img/tools/${t[1]}.svg" alt="" width="18" height="18"></span>${t[0]}</span>`;
+  $('.tools').innerHTML = `<div class="tool-track">${TOOLS.map((t, i) => chip(t, false, i)).join('')}${TOOLS.map((t) => chip(t, true)).join('')}</div>`;
 }
 
 function renderWall() {
   const pick = (ids, i) => ids.map((id) => { const p = byId[id]; const s = p.screens[Math.min(i, p.screens.length - 1)]; return { p, src: s[0] }; });
-  const row1 = pick(['staza', 'haulr', 'fanfare', 'kasuwa', 'stackwise', 'carewell', 'nullorbit', 'mudu'], 1);
+  const row1 = pick(['daticks', 'staza', 'haulr', 'fanfare', 'kasuwa', 'stackwise', 'carewell', 'nullorbit', 'mudu'], 1);
   const row2 = pick(['ledgerly', 'imole', 'aurum', 'touchline', 'afterglow', 'echoform', 'orosocial', 'aaro'], 0);
   const html = (items) => {
     const one = items.map(({ p, src }) => `<a class="wall-item" href="${pageOf(p)}" tabindex="-1"><img src="${src}" alt="" decoding="async"><span>${esc(p.name)}</span></a>`).join('');
@@ -151,6 +151,45 @@ function renderWall() {
   $('.wall .wr1').innerHTML = html(row1);
   $('.wall .wr2').innerHTML = html(row2);
   const n = $('[data-count-projects]'); if (n) n.textContent = REAL.length;
+}
+
+/* Hero wall: rows drift on their own, speed up with scroll, follow the pointer and can be dragged. */
+function initWall() {
+  const wall = $('.wall'), tilt = $('.wall-tilt');
+  if (!wall) return;
+  const rows = $$('.wall-row', wall).map((el, i) => ({ el, x: i ? -300 : 0, dir: i ? 1 : -1, w: 0 }));
+  const measure = () => rows.forEach((r) => (r.w = r.el.scrollWidth / 2));
+  measure(); addEventListener('resize', measure); addEventListener('load', measure);
+  let boost = 0, lastY = scrollY, rx = 14, ry = 0, trx = 14, try_ = 0, drag = null, hover = false, last = performance.now();
+  addEventListener('scroll', () => { boost = Math.min(14, boost + Math.abs(scrollY - lastY) * 0.06); lastY = scrollY; }, { passive: true });
+  wall.addEventListener('pointerenter', () => (hover = true));
+  wall.addEventListener('pointerleave', () => { hover = false; try_ = 0; });
+  wall.addEventListener('pointermove', (e) => {
+    const r = wall.getBoundingClientRect();
+    try_ = ((e.clientX - r.left) / r.width - 0.5) * 10;
+    if (drag) { const dx = e.clientX - drag.x; drag.x = e.clientX; rows.forEach((row) => (row.x += dx)); drag.moved += Math.abs(dx); }
+  });
+  wall.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, moved: 0 }; wall.classList.add('grabbing'); });
+  addEventListener('pointerup', () => { if (drag) { wall.classList.remove('grabbing'); wall._moved = drag.moved; drag = null; } });
+  wall.addEventListener('click', (e) => { if (wall._moved > 6) { e.preventDefault(); e.stopPropagation(); } wall._moved = 0; }, true);
+  const frame = (t) => {
+    const dt = Math.min(48, t - last); last = t;
+    if (motionOn()) {
+      const sp = (hover && !drag ? 0.25 : 1) * (0.045 + boost * 0.02);
+      boost *= 0.94;
+      rows.forEach((r) => {
+        if (!drag) r.x += r.dir * sp * dt;
+        if (r.w) { if (r.x < -r.w) r.x += r.w; if (r.x > 0) r.x -= r.w; }
+        r.el.style.transform = `translate3d(${r.x}px,0,0)`;
+      });
+      const sy = Math.max(0, 16 - scrollY / 40);
+      trx = sy;
+      rx += (trx - rx) * 0.08; ry += (try_ - ry) * 0.08;
+      tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
+    }
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
 }
 
 function mediaHTML(p) {
@@ -167,14 +206,14 @@ function mediaHTML(p) {
 function cardHTML(p, i) {
   const facts = (p.facts || []).slice(0, 3).map((f) => `<div class="fact"><b>${esc(f[0])}</b><small>${esc(f[1])}</small></div>`).join('');
   return `<article class="card" data-i="${i}" data-id="${p.id}">
-    <button class="card-head" aria-expanded="false"><span class="no">${String(i + 1).padStart(2, '0')}</span><img class="th" src="${p.cover}" alt="" loading="lazy"><span class="t">${esc(p.name)}</span><span class="d">${esc(p.line)}</span><span class="tag">${esc(p.tag)}</span></button>
+    <button class="card-head" aria-expanded="false"><span class="no">${String(i + 1).padStart(2, '0')}</span><img class="th" src="${p.cover}" alt="" loading="lazy"><span class="t">${esc(p.name)}</span>${p.client ? '<span class="client">Client work</span>' : ''}<span class="d">${esc(p.line)}</span><span class="tag">${esc(p.tag)}</span></button>
     <div class="card-body"><div class="card-grid">
       ${mediaHTML(p)}
       <div class="card-info">
         <span class="kicker">${esc(p.kicker)} · ${esc(p.role)}</span>
         <h3 class="ci-title">${esc(p.line)}</h3>
         <div><h4>The problem</h4><p>${esc(p.problem)}</p></div>
-        <div><h4>What I did</h4><ul>${p.did.map((d) => `<li>${esc(d)}</li>`).join('')}</ul></div>
+        <div><h4>What I did</h4><ul>${p.did.slice(0, 3).map((d) => `<li>${esc(d)}</li>`).join('')}</ul></div>
         ${facts ? `<div class="facts">${facts}</div>` : ''}
         <div class="card-cta"><a class="btn btn-ink btn-sm" href="${pageOf(p)}" data-go-link>Read the case study →</a><a class="btn btn-glass btn-sm" target="_blank" rel="noopener" href="${wa(`Hi Jaiye, I saw ${p.name} on your portfolio. I'd like something similar.`)}">I want one like this</a></div>
       </div>
@@ -328,6 +367,35 @@ function initTabs() {
   window.selectSection = (id) => { const t = $('#tab-' + id); if (t) select(t); };
 }
 
+/* Count up the numbers inside a string ("30+", "₦500", "14 days") */
+function countUp(el) {
+  const txt = el.dataset.full || el.textContent; el.dataset.full = txt;
+  const m = txt.match(/\d[\d,.]*/);
+  if (!m || !motionOn()) { el.textContent = txt; return; }
+  const to = parseFloat(m[0].replace(/,/g, '')), dec = (m[0].split('.')[1] || '').length;
+  const t0 = performance.now();
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / 700), v = to * (1 - Math.pow(1 - k, 3));
+    el.textContent = txt.replace(m[0], dec ? v.toFixed(dec) : Math.round(v).toLocaleString('en'));
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* 3D tilt on the open card's media */
+function initTilt() {
+  if (isTouch) return;
+  document.addEventListener('pointermove', (e) => {
+    const m = e.target.closest && e.target.closest('.card.open .card-media');
+    $$('.card-media.tilting').forEach((x) => { if (x !== m) { x.classList.remove('tilting'); x.style.transform = ''; } });
+    if (!m || !motionOn()) return;
+    const r = m.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+    m.classList.add('tilting');
+    m.style.transform = `perspective(1200px) rotateY(${px * 5}deg) rotateX(${-py * 5}deg)`;
+    m.style.setProperty('--gx', (px + 0.5) * 100 + '%'); m.style.setProperty('--gy', (py + 0.5) * 100 + '%');
+  }, { passive: true });
+}
+
 /* Screens inside the open card play like a slideshow */
 const slideTimers = new Map();
 function playSlides(card, on) {
@@ -372,7 +440,12 @@ function initDecks() {
         c.style.setProperty('--h', h + 'px'); c.style.setProperty('--mb', mb + 'px');
         $$('a,button', $('.card-body', c)).forEach((b) => (b.tabIndex = d === 0 ? 0 : -1));
       });
-      if (prev !== idx) { if (prev >= 0) playSlides(cards[prev], false); playSlides(cards[idx], true); }
+      if (prev !== idx) {
+        if (prev >= 0) playSlides(cards[prev], false);
+        playSlides(cards[idx], true);
+        const c = cards[idx]; c.classList.remove('enter'); void c.offsetWidth; c.classList.add('enter');
+        $$('.fact b', c).forEach((b) => countUp(b));
+      }
       txt.textContent = `${idx + 1} of ${n} open${idx < n - 1 ? ' · keep scrolling to unfold the next' : ''}`;
       bar.style.width = ((idx + 1) / n * 100) + '%';
       if (!force) tick(420 + idx * 30, 0.04);
@@ -435,7 +508,7 @@ function initSettings() {
   $('[data-setting="motion"]').addEventListener('click', () => { root.dataset.motion = root.dataset.motion === 'off' ? 'on' : 'off'; S.motion = root.dataset.motion; save(); sync(); tick(); });
   $('[data-setting="sound"]').addEventListener('click', () => { S.sound = !S.sound; save(); sync(); tick(880); });
   $$('button', sw).forEach((b) => b.addEventListener('click', () => { root.style.setProperty('--accent', b.dataset.c); S.accent = b.dataset.c; save(); sync(); tick(); }));
-  $('[data-reset]').addEventListener('click', () => { S = {}; save(); root.style.removeProperty('--accent'); root.dataset.glass = 'on'; root.dataset.motion = 'on'; root.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; sync(); toast('Settings reset'); });
+  $('[data-reset]').addEventListener('click', () => { S = {}; save(); root.style.removeProperty('--accent'); root.dataset.glass = 'on'; root.dataset.motion = 'on'; root.dataset.theme = 'light'; sync(); toast('Settings reset'); });
   window.setTheme = (v) => {
     const doIt = () => { root.dataset.theme = v; S.theme = v; save(); sync(); };
     if (document.startViewTransition && motionOn()) document.startViewTransition(doIt); else doIt();
@@ -584,10 +657,10 @@ function initScroll() {
     island.classList.toggle('shrink', y > 40);
     if (dock) { if (y > lastY + 4 && y > 400) dock.classList.add('hide'); if (y < lastY - 4) dock.classList.remove('hide'); }
     lastY = y;
-    if (motionOn()) {
-      blobs.forEach((b) => (b.style.translate = `0 ${y * +b.dataset.parallax}px`));
-      if (wall && y < innerHeight * 1.5) wall.style.setProperty('--tilt', Math.max(0, 18 - y / 30) + 'deg');
-    }
+    if (motionOn()) blobs.forEach((b) => (b.style.translate = `0 ${y * +b.dataset.parallax}px`));
+    const prog = $('.scroll-prog');
+    if (prog) prog.style.transform = `scaleX(${y / Math.max(1, document.documentElement.scrollHeight - innerHeight)})`;
+    const top = $('.to-top'); if (top) top.classList.toggle('on', y > innerHeight * 1.5);
     const r = stepsBox.getBoundingClientRect(), vh = innerHeight;
     const p = Math.max(0, Math.min(1, (vh * 0.7 - r.top) / (r.height + vh * 0.2)));
     line.style.setProperty('--p', (p * 100) + '%');
@@ -638,7 +711,6 @@ function initGlobal() {
   });
   let buf = '';
   document.addEventListener('keydown', (e) => { if (e.target.matches('input,select,textarea')) return; buf = (buf + e.key).slice(-4).toLowerCase(); if (buf === 'goal') openSheet('game'); });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { if (!S.theme) { root.dataset.theme = e.matches ? 'dark' : 'light'; window.syncSettings(); } });
 }
 
 /* ================= Boot ================= */
@@ -655,6 +727,8 @@ splitText();
 initSettings();
 initTabs();
 initDecks();
+initWall();
+initTilt();
 initReel();
 initCmd();
 initGame();
