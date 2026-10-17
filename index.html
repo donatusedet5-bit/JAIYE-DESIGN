@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="styles.css">
 <script>
   // Apply saved settings before paint so there is no flash.
-  try{const s=JSON.parse(localStorage.getItem('jaiye-settings')||'{}');const r=document.documentElement;
+  try{const s=JSON.parse(localStorage.getItem('jaiye-settings-v2')||'{}');const r=document.documentElement;
     const dark=s.theme==='dark';
     r.dataset.theme=dark?'dark':'light';if(s.glass)r.dataset.glass=s.glass;
     const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=s.motion||'on';

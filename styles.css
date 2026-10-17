@@ -880,3 +880,38 @@ h2{font-size:clamp(34px,5.4vw,64px)}
 /* Case pages: tall full-page images sit in a scrollable frame */
 .shot.tall .shot-btn{max-height:82vh;overflow:auto;cursor:zoom-in;scrollbar-width:thin}
 .cs-client{display:inline-flex;align-items:center;gap:8px;margin-left:10px;vertical-align:middle}
+
+/* =================== v5: custom pointer, bigger float, work header alignment =================== */
+/* Native custom pointer: a rounded navy arrow (accent on links). The old glass ring is gone. */
+@media (hover:hover) and (pointer:fine){
+  html,body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M5 3.5l17 8.6c1 .5.9 1.9-.2 2.2l-6.6 1.9-2.6 6.4c-.4 1-1.9 1-2.2-.1L4.1 4.7c-.3-.9.5-1.6.9-1.2z' fill='%2308122E' stroke='%23fff' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,auto}
+  a,button,summary,select,label,[role="button"],[data-go],.wall,.card-head,.shot-btn{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M5 3.5l17 8.6c1 .5.9 1.9-.2 2.2l-6.6 1.9-2.6 6.4c-.4 1-1.9 1-2.2-.1L4.1 4.7c-.3-.9.5-1.6.9-1.2z' fill='%231F3BD6' stroke='%23fff' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,pointer}
+  .wall.grabbing{cursor:grabbing}
+  input,textarea{cursor:text}
+}
+.cursor{width:auto;height:auto;margin:0;padding:7px 12px;border-radius:999px;background:var(--ink);color:var(--bg);border:0;box-shadow:0 10px 24px -10px rgba(8,18,46,.5);-webkit-backdrop-filter:none;backdrop-filter:none;opacity:0;scale:.6;transition:opacity .2s,scale .25s var(--spring)}
+.cursor.on,.cursor.link{width:auto;height:auto;margin:0}
+.cursor.big{width:auto;height:auto;margin:0;opacity:1;scale:1;background:var(--ink)}
+.cursor-label{color:var(--bg);font-size:13px;opacity:1}
+:root[data-theme="dark"] .cursor{background:#fff}
+:root[data-theme="dark"] .cursor-label{color:#08122E}
+
+/* Tool logos: clearly floating */
+@keyframes float{
+  0%{transform:translate3d(0,0,0) rotate(var(--rot,-3deg))}
+  25%{transform:translate3d(10px,-18px,0) rotate(0deg)}
+  50%{transform:translate3d(0,-26px,0) rotate(calc(var(--rot,-3deg) * -1))}
+  75%{transform:translate3d(-10px,-12px,0) rotate(0deg)}
+  100%{transform:translate3d(0,0,0) rotate(var(--rot,-3deg))}
+}
+.tool{animation:toolIn .7s var(--spring) both,float var(--dur,5s) ease-in-out infinite;animation-delay:calc(var(--i,0)*70ms + .3s),var(--delay,0s)}
+
+/* Work header: everything shares the deck's left and right edges */
+.work .sec-head,.work .tabs-wrap{width:min(1680px,calc(100vw - 32px));margin-left:calc(50% - min(840px,(100vw - 32px)/2));padding:0 12px}
+.work .tabs-wrap{justify-content:flex-start}
+.panel-intro{padding:0 12px;align-items:center;margin-bottom:14px}
+.panel-intro h3{display:none}
+.panel-intro p{font-size:16px}
+@media (max-width:640px){.work .sec-head,.work .tabs-wrap{width:auto;margin-left:0;padding:0}.work .tabs-wrap{margin:0 calc(-1*var(--gutter)) 18px;padding:0 var(--gutter)}}
+.card.open .card-info{overflow:auto;-webkit-mask-image:linear-gradient(180deg,#000 85%,transparent);mask-image:linear-gradient(180deg,#000 85%,transparent);padding-bottom:28px;scrollbar-width:none}
+.card.open .card-info::-webkit-scrollbar{display:none}

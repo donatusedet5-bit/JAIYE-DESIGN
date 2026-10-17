@@ -103,8 +103,8 @@ const check = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true
 
 const ACCENTS = [['Blue', '#1F3BD6'], ['Violet', '#6D3CF2'], ['Teal', '#0E9F86'], ['Orange', '#EA580C'], ['Pink', '#DB2777']];
 let S = {};
-try { S = JSON.parse(localStorage.getItem('jaiye-settings') || '{}'); } catch (e) {}
-const save = () => { try { localStorage.setItem('jaiye-settings', JSON.stringify(S)); } catch (e) {} };
+try { S = JSON.parse(localStorage.getItem('jaiye-settings-v2') || '{}'); } catch (e) {}
+const save = () => { try { localStorage.setItem('jaiye-settings-v2', JSON.stringify(S)); } catch (e) {} };
 
 let actx;
 function tick(freq = 660, dur = 0.05) {
@@ -624,7 +624,7 @@ function initPointer() {
   let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
   addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; cur.classList.add('on'); }, { passive: true });
   document.addEventListener('pointerleave', () => cur.classList.remove('on'));
-  const loop = () => { cx += (x - cx) * 0.28; cy += (y - cy) * 0.28; cur.style.transform = `translate3d(${cx}px,${cy}px,0)`; requestAnimationFrame(loop); };
+  const loop = () => { cx += (x - cx) * 0.28; cy += (y - cy) * 0.28; cur.style.transform = `translate3d(${cx + 20}px,${cy + 22}px,0)`; requestAnimationFrame(loop); };
   loop();
   document.addEventListener('pointerover', (e) => {
     const big = e.target.closest('[data-cursor]');
