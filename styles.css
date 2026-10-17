@@ -1028,3 +1028,57 @@ section.section:not(.work){content-visibility:auto;contain-intrinsic-size:auto 9
   .car-btn:disabled{opacity:.35}
 }
 @media (min-width:641px){.car-nav{display:none}}
+
+/* =================== v8: no purple, real glass everywhere, calmer dark mode =================== */
+/* One brand blue, no violet gradients */
+.headline .accent{background:none!important;-webkit-text-fill-color:currentColor!important;color:var(--accent)!important;animation:none!important}
+.progress span,.scroll-prog{background:var(--accent)!important}
+
+/* Light: give the glass something to blur and a crisp edge */
+:root{--b1:#B9C8FF;--b2:#D2DBFF;--b3:#FFE0D0;
+  --glass:rgba(255,255,255,.52);--glass-2:rgba(255,255,255,.68);--glass-edge:rgba(255,255,255,.9);
+  --glass-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 0 0 1px rgba(8,18,46,.04),0 20px 50px -22px rgba(8,18,46,.28)}
+.blob{opacity:.85}
+.card,.price,.skill:not(.big),.step,.faq details,.post,.wi-card{-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%)}
+
+/* Dark: near-black ink, one cool light source, glass that reads as glass */
+:root[data-theme="dark"]{
+  --bg:#05070D;--bg-2:#0C1020;--ink:#F2F4FA;--ink-2:#C4C9D9;--muted:#8A91A6;
+  --line:rgba(255,255,255,.07);--line-2:rgba(255,255,255,.14);
+  --accent:#4D6BFF;
+  --glass:rgba(255,255,255,.045);--glass-2:rgba(255,255,255,.075);
+  --glass-edge:rgba(255,255,255,.10);
+  --glass-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 0 0 1px rgba(0,0,0,.4),0 30px 60px -30px rgba(0,0,0,.8);
+  --solid:#0D111D;
+  --b1:#13235F;--b2:#0B1433;--b3:transparent}
+:root[data-theme="dark"] body{background:radial-gradient(1200px 700px at 50% -10%,#0E1838 0%,var(--bg) 60%) fixed,var(--bg)}
+:root[data-theme="dark"] .blob{opacity:.55}
+:root[data-theme="dark"] .b3{display:none}
+:root[data-theme="dark"] .grain{opacity:.035}
+:root[data-theme="dark"] .headline .accent{color:#8EA2FF!important}
+:root[data-theme="dark"] .eyebrow,:root[data-theme="dark"] .kicker{color:#8EA2FF}
+:root[data-theme="dark"] .card-info .facts .fact,:root[data-theme="dark"] .hero-facts li{background:rgba(255,255,255,.04);border:1px solid var(--line)}
+:root[data-theme="dark"] .card-media{background:#0A0D17;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+:root[data-theme="dark"] .skill.big{background:linear-gradient(160deg,#0E1636,#070A14);border:1px solid var(--line)}
+:root[data-theme="dark"] .price.web{background:linear-gradient(160deg,#16225A,#0A0F22)}
+:root[data-theme="dark"] .tab[aria-selected="true"],:root[data-theme="dark"] .tab-pill{color:#fff}
+:root[data-theme="dark"] .btn-ink{background:#F2F4FA;color:#05070D;box-shadow:0 10px 30px -12px rgba(0,0,0,.8)}
+:root[data-theme="dark"] .btn-ink:hover{background:#fff}
+:root[data-theme="dark"] .wall-item{box-shadow:0 30px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06)}
+:root[data-theme="dark"] .tool{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.09)}
+
+/* Phones: glass back on, slightly lighter blur so scrolling stays smooth */
+@media (max-width:900px),(hover:none){
+  .glass,.glass-strong,.btn-glass,.dock,.tabs,.hero-facts li,.m-bar,.cur-bar,.card,.price,.skill:not(.big),.step,.faq details,.post,.wi-card{-webkit-backdrop-filter:blur(16px) saturate(160%)!important;backdrop-filter:blur(16px) saturate(160%)!important}
+  .island{-webkit-backdrop-filter:blur(20px) saturate(170%)!important;backdrop-filter:blur(20px) saturate(170%)!important;background:rgba(255,255,255,.72)!important}
+  .glass,.btn-glass,.hero-facts li,.tabs,.cur-bar{background:var(--glass)}
+  .glass-strong,.dock{background:var(--glass-2)!important}
+  .card,.card.past,.card.gone,.card.open{background:var(--glass-2)!important;border-color:var(--glass-edge)!important}
+  :root[data-theme="dark"] .island{background:rgba(13,17,29,.72)!important}
+  :root[data-theme="dark"] .glass,:root[data-theme="dark"] .btn-glass,:root[data-theme="dark"] .hero-facts li,:root[data-theme="dark"] .tabs,:root[data-theme="dark"] .cur-bar{background:var(--glass)}
+  .blob{filter:blur(50px)}
+}
+:root[data-theme="dark"] .headline .accent{color:#5E7BFF!important}
+:root[data-theme="dark"] .m-bar{background:rgba(5,7,13,.7)!important;border-color:rgba(255,255,255,.1)}
+:root[data-theme="dark"] .m-dots i{background:rgba(255,255,255,.35)}
+:root[data-theme="dark"] .m-dots i.on{background:#fff}
