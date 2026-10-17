@@ -113,7 +113,6 @@
     <div class="sec-head">
       <p class="eyebrow">Selected work</p>
       <h2 id="work-title" data-split>Real projects, sorted by what they are.</h2>
-      <p class="lede" data-reveal>Pick a section and scroll inside the deck: one card opens and plays its screens, the rest stay folded. Every project has its own case study page.</p>
     </div>
     <div class="tabs-wrap">
       <div class="tabs glass" role="tablist" aria-label="Work sections"></div>
@@ -171,7 +170,6 @@
     <div class="sec-head">
       <p class="eyebrow">How I work</p>
       <h2 id="process-title" data-split>Four steps on every project.</h2>
-      <p class="lede" data-reveal>As you scroll, the line fills and each step lights up.</p>
     </div>
     <ol class="steps">
       <span class="steps-line" aria-hidden="true"><span></span></span>
@@ -206,9 +204,12 @@
     <div class="sec-head">
       <p class="eyebrow">Pricing</p>
       <h2 id="pricing-title" data-split>Simple starting prices, in your currency.</h2>
-      <p class="lede" data-reveal>Every card shows dollars, naira, pounds and euros. You get a fixed quote before any work starts, and you pay half to start, half on handoff.</p>
+      <p class="lede" data-reveal>A fixed quote before any work starts. Half to start, half on handoff.</p>
     </div>
-    <p class="rate-note" data-reveal><span class="pulse"></span><span class="rate-txt">Converted at today's rate</span></p>
+    <div class="cur-bar glass" data-reveal>
+      <label class="country"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="sr-only">Your country</span><select id="country"></select><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></label>
+      <div class="cur-pills" role="radiogroup" aria-label="Currency"></div>
+    </div>
     <div class="price-grid"></div>
   </section>
 

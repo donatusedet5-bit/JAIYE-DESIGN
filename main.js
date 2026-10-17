@@ -72,7 +72,7 @@ const PRICES = [
   { t: 'Game UI', usd: 300, time: '2 to 3 weeks', gets: ['HUD, menus and key screens', 'UI kit with states', 'Icon set', 'Clickable prototype', 'Source files'] },
   { t: 'Full website project', usd: 400, time: '3 to 4 weeks', web: true, badge: 'Design and build', gets: ['Up to 6 pages, designed and built', 'Live, fast and responsive site', 'Scroll animations and interactions', 'Editable content (CMS)', 'Domain setup, SEO basics and analytics', '30 days of support after launch'] },
 ];
-const CUR = [['USD', 'US dollar', 1], ['NGN', 'Naira', 1460], ['GBP', 'Pound', 0.75], ['EUR', 'Euro', 0.86]];
+const CUR = [['USD', 'US dollar', 1], ['GBP', 'British pound', 0.75], ['EUR', 'Euro', 0.86], ['NGN', 'Nigerian naira', 1460], ['CAD', 'Canadian dollar', 1.38]];
 
 /* ---------------- Blog ---------------- */
 const POSTS = [
@@ -142,7 +142,7 @@ function renderTools() {
 
 function renderWall() {
   const pick = (ids, i) => ids.map((id) => { const p = byId[id]; const s = p.screens[Math.min(i, p.screens.length - 1)]; return { p, src: s[0] }; });
-  const row1 = pick(['daticks', 'staza', 'haulr', 'fanfare', 'kasuwa', 'stackwise', 'carewell', 'nullorbit', 'mudu'], 1);
+  const row1 = pick(['staza', 'haulr', 'fanfare', 'daticks', 'kasuwa', 'stackwise', 'carewell', 'nullorbit', 'mudu'], 1);
   const row2 = pick(['ledgerly', 'imole', 'aurum', 'touchline', 'afterglow', 'echoform', 'orosocial', 'aaro'], 0);
   const html = (items) => {
     const one = items.map(({ p, src }) => `<a class="wall-item" href="${pageOf(p)}" tabindex="-1"><img src="${src}" alt="" decoding="async"><span>${esc(p.name)}</span></a>`).join('');
@@ -204,7 +204,7 @@ function mediaHTML(p) {
 }
 
 function cardHTML(p, i) {
-  const facts = (p.facts || []).slice(0, 3).map((f) => `<div class="fact"><b>${esc(f[0])}</b><small>${esc(f[1])}</small></div>`).join('');
+  const facts = (p.facts || []).slice(0, 2).map((f) => `<div class="fact"><b>${esc(f[0])}</b><small>${esc(f[1])}</small></div>`).join('');
   return `<article class="card" data-i="${i}" data-id="${p.id}">
     <button class="card-head" aria-expanded="false"><span class="no">${String(i + 1).padStart(2, '0')}</span><img class="th" src="${p.cover}" alt="" loading="lazy"><span class="t">${esc(p.name)}</span>${p.client ? '<span class="client">Client work</span>' : ''}<span class="d">${esc(p.line)}</span><span class="tag">${esc(p.tag)}</span></button>
     <div class="card-body"><div class="card-grid">
@@ -212,8 +212,6 @@ function cardHTML(p, i) {
       <div class="card-info">
         <span class="kicker">${esc(p.kicker)} · ${esc(p.role)}</span>
         <h3 class="ci-title">${esc(p.line)}</h3>
-        <div><h4>The problem</h4><p>${esc(p.problem)}</p></div>
-        <div><h4>What I did</h4><ul>${p.did.slice(0, 3).map((d) => `<li>${esc(d)}</li>`).join('')}</ul></div>
         ${facts ? `<div class="facts">${facts}</div>` : ''}
         <div class="card-cta"><a class="btn btn-ink btn-sm" href="${pageOf(p)}" data-go-link>Read the case study →</a><a class="btn btn-glass btn-sm" target="_blank" rel="noopener" href="${wa(`Hi Jaiye, I saw ${p.name} on your portfolio. I'd like something similar.`)}">I want one like this</a></div>
       </div>
@@ -249,7 +247,7 @@ function renderWork() {
       </div>`;
     }
     return `<div class="panel-sec${si === 0 ? ' on' : ''}" role="tabpanel" id="panel-${s.id}" aria-labelledby="tab-${s.id}">
-      <div class="panel-intro"><div><h3>${esc(s.label)}</h3><p>${esc(s.intro)}</p></div>${s.id !== 'motion' && list.length > 1 ? '<span class="hint"><span class="mouse"></span>Scroll inside the deck</span>' : ''}</div>
+      <div class="panel-intro"><p>${esc(s.intro)}</p></div>
       ${inner}
     </div>`;
   }).join('');
@@ -267,12 +265,28 @@ function renderExp() {
 }
 
 const rates = Object.fromEntries(CUR.map((c) => [c[0], c[2]]));
-function homeCurrency() {
+const COUNTRIES = [
+  ['United States', 'USD'], ['Nigeria', 'NGN'], ['United Kingdom', 'GBP'], ['Canada', 'CAD'],
+  ['Germany', 'EUR'], ['France', 'EUR'], ['Ireland', 'EUR'], ['Netherlands', 'EUR'], ['Spain', 'EUR'], ['Italy', 'EUR'],
+  ['Ghana', 'USD'], ['Kenya', 'USD'], ['South Africa', 'USD'], ['United Arab Emirates', 'USD'], ['Other country', 'USD'],
+];
+function homeCountry() {
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-  if (tz === 'Africa/Lagos') return 'NGN';
-  if (tz === 'Europe/London') return 'GBP';
-  if (tz.startsWith('Europe/')) return 'EUR';
-  return 'USD';
+  if (tz === 'Africa/Lagos') return 'Nigeria';
+  if (tz === 'Europe/London') return 'United Kingdom';
+  if (/^America\/(Toronto|Vancouver|Edmonton|Winnipeg|Halifax|Montreal|Regina|St_Johns)/.test(tz)) return 'Canada';
+  if (tz === 'Europe/Berlin') return 'Germany';
+  if (tz === 'Europe/Paris') return 'France';
+  if (tz === 'Europe/Dublin') return 'Ireland';
+  if (tz === 'Europe/Amsterdam') return 'Netherlands';
+  if (tz === 'Europe/Madrid') return 'Spain';
+  if (tz === 'Europe/Rome') return 'Italy';
+  if (tz === 'Africa/Accra') return 'Ghana';
+  if (tz === 'Africa/Nairobi') return 'Kenya';
+  if (tz === 'Africa/Johannesburg') return 'South Africa';
+  if (tz === 'Asia/Dubai') return 'United Arab Emirates';
+  if (tz.startsWith('America/')) return 'United States';
+  return 'United States';
 }
 function nice(v, cur) {
   if (cur === 'USD') return v;
@@ -284,25 +298,46 @@ function fmt(v, cur) {
   catch (e) { return cur + ' ' + Math.round(v).toLocaleString(); }
 }
 function renderPricing() {
-  const home = homeCurrency();
-  const grid = $('.price-grid');
-  const curBlock = (usd) => `<div class="cur4">${CUR.map(([c, name]) => `<div class="c${c === home ? ' me' : ''}" data-c="${c}" data-usd="${usd}"><small>${c}</small><b>${fmt(nice(usd * rates[c], c), c)}</b></div>`).join('')}</div>`;
+  const sel = $('#country'), pills = $('.cur-pills'), grid = $('.price-grid');
+  sel.innerHTML = COUNTRIES.map(([n, c]) => `<option value="${n}">${n} · ${c}</option>`).join('');
+  pills.innerHTML = '<span class="cur-pill-bg" aria-hidden="true"></span>' + CUR.map(([c, name]) => `<button role="radio" aria-checked="false" data-c="${c}" aria-label="${name}">${c}</button>`).join('');
   grid.innerHTML = PRICES.map((p) => {
     const list = `<ul>${p.gets.map((g) => `<li>${check}<span>${g}</span></li>`).join('')}</ul>`;
     const head = `<div class="p-top"><h3>${p.t}</h3>${p.hot ? '<span class="badge">Most booked</span>' : ''}${p.badge ? `<span class="badge">${p.badge}</span>` : ''}</div>
-      <div class="from">Starting from <span class="time">· ${p.time}</span></div>${curBlock(p.usd)}`;
+      <div class="from">Starting from</div><div class="amt" data-usd="${p.usd}">$${p.usd}</div><div class="time">${p.time}</div>`;
     const btn = `<a class="btn ${p.hot ? 'btn-accent' : 'btn-glass'}" target="_blank" rel="noopener" href="${wa(`Hi Jaiye, I'd like a quote for: ${p.t}.`)}">Start on WhatsApp</a>`;
     if (p.web) return `<div class="price web" data-reveal><div>${head}${btn}</div><div><div class="gets">What you get</div>${list}</div></div>`;
     return `<div class="price glass${p.hot ? ' hot' : ''}" data-reveal>${head}<div class="gets">What you get</div>${list}${btn}</div>`;
   }).join('');
-  const apply = (live) => {
-    $$('.cur4 .c', grid).forEach((el) => { const c = el.dataset.c; $('b', el).textContent = fmt(nice(+el.dataset.usd * rates[c], c), c); });
-    const d = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-    $('.rate-txt').textContent = live ? `Converted at today's rate (${d}) · your currency is highlighted` : 'Converted at recent rates · your currency is highlighted';
+  let cur = 'USD';
+  const movePill = () => {
+    const b = $(`button[data-c="${cur}"]`, pills), bg = $('.cur-pill-bg', pills);
+    if (b) { bg.style.width = b.offsetWidth + 'px'; bg.style.transform = `translateX(${b.offsetLeft}px)`; }
   };
+  const apply = (animate) => {
+    $$('button', pills).forEach((b) => b.setAttribute('aria-checked', b.dataset.c === cur));
+    movePill();
+    $$('.amt', grid).forEach((a) => {
+      const v = fmt(nice(+a.dataset.usd * rates[cur], cur), cur);
+      if (animate && motionOn()) { a.classList.remove('flip'); void a.offsetWidth; a.classList.add('flip'); setTimeout(() => (a.textContent = v), 140); }
+      else a.textContent = v;
+    });
+  };
+  const setCur = (c, fromPill) => {
+    cur = c; S.currency = c; save();
+    if (fromPill && (COUNTRIES.find(([n]) => n === sel.value) || [])[1] !== c) sel.value = (COUNTRIES.find(([, cc]) => cc === c) || COUNTRIES[0])[0];
+    apply(true); tick(700);
+  };
+  const country = S.country && COUNTRIES.some(([n]) => n === S.country) ? S.country : homeCountry();
+  sel.value = country;
+  cur = S.currency || COUNTRIES.find(([n]) => n === country)[1];
+  sel.addEventListener('change', () => { S.country = sel.value; setCur(COUNTRIES.find(([n]) => n === sel.value)[1]); });
+  $$('button', pills).forEach((b) => b.addEventListener('click', () => setCur(b.dataset.c, true)));
   apply(false);
+  addEventListener('resize', movePill);
+  if (document.fonts) document.fonts.ready.then(movePill);
   fetch('https://open.er-api.com/v6/latest/USD').then((r) => (r.ok ? r.json() : null)).then((j) => {
-    if (j && j.rates) { CUR.forEach(([c]) => { if (j.rates[c]) rates[c] = j.rates[c]; }); apply(true); }
+    if (j && j.rates) { CUR.forEach(([c]) => { if (j.rates[c]) rates[c] = j.rates[c]; }); apply(false); }
   }).catch(() => {});
 }
 
