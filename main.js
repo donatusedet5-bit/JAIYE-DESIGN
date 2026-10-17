@@ -12,7 +12,8 @@ const SECTIONS = SITE.sections;
 const PROJECTS = SITE.projects;
 const REAL = PROJECTS.filter((p) => !p.reel);
 const byId = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
-const pageOf = (p) => (p.reel ? 'showreel.html' : `work/${p.id}.html`);
+const pageOf = (p) => (p.reel ? '/showreel' : `/work/${p.id}`);
+const M = (src) => '/' + String(src).replace(/^\//, '').replace(/\.webp$/, '-m.webp');
 
 /* ---------------- Tools in the hero (official brand marks from Simple Icons, CC0) ---------------- */
 const TOOLS = [
@@ -145,7 +146,7 @@ function renderWall() {
   const row1 = pick(['staza', 'haulr', 'fanfare', 'daticks', 'kasuwa', 'stackwise', 'carewell', 'nullorbit', 'mudu'], 1);
   const row2 = pick(['ledgerly', 'imole', 'aurum', 'touchline', 'afterglow', 'echoform', 'orosocial', 'aaro'], 0);
   const html = (items) => {
-    const one = items.map(({ p, src }) => `<a class="wall-item" href="${pageOf(p)}" tabindex="-1"><img src="${src}" alt="" decoding="async"><span>${esc(p.name)}</span></a>`).join('');
+    const one = items.map(({ p, src }) => `<a class="wall-item" href="${pageOf(p)}" tabindex="-1"><img src="${M(src)}" alt="" loading="lazy" decoding="async"><span>${esc(p.name)}</span></a>`).join('');
     return one + one;
   };
   $('.wall .wr1').innerHTML = html(row1);
@@ -172,9 +173,11 @@ function initWall() {
   wall.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, moved: 0 }; wall.classList.add('grabbing'); });
   addEventListener('pointerup', () => { if (drag) { wall.classList.remove('grabbing'); wall._moved = drag.moved; drag = null; } });
   wall.addEventListener('click', (e) => { if (wall._moved > 6) { e.preventDefault(); e.stopPropagation(); } wall._moved = 0; }, true);
+  let visible = true;
+  new IntersectionObserver((es) => { visible = es[0].isIntersecting; }).observe(wall);
   const frame = (t) => {
     const dt = Math.min(48, t - last); last = t;
-    if (motionOn()) {
+    if (motionOn() && visible && !document.hidden) {
       const sp = (hover && !drag ? 0.25 : 1) * (0.045 + boost * 0.02);
       boost *= 0.94;
       rows.forEach((r) => {
@@ -185,7 +188,7 @@ function initWall() {
       const sy = Math.max(0, 16 - scrollY / 40);
       trx = sy;
       rx += (trx - rx) * 0.08; ry += (try_ - ry) * 0.08;
-      tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
+      if (!isTouch) tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
     }
     requestAnimationFrame(frame);
   };
@@ -194,11 +197,11 @@ function initWall() {
 
 function mediaHTML(p) {
   if (p.tall) {
-    return `<div class="card-media scroller" data-go="${pageOf(p)}" data-cursor="Open"><img src="${p.screens[0][0]}" alt="${esc(p.name)}: full landing page" loading="lazy"><span class="m-badge glass">Live preview · hover to scroll</span></div>`;
+    return `<div class="card-media scroller" data-go="${pageOf(p)}" data-cursor="Open"><img src="${M(p.screens[0][0])}" alt="${esc(p.name)}: full landing page" loading="lazy"><span class="m-badge glass">Live preview · hover to scroll</span></div>`;
   }
   const shots = [[p.cover, 'Cover']].concat(p.screens);
   return `<div class="card-media slides" data-go="${pageOf(p)}" data-cursor="Open">
-    ${shots.map((s, i) => `<img src="${s[0]}" alt="${esc(p.name)}: ${esc(s[1])}" loading="lazy" class="${i ? '' : 'on'}" data-cap="${esc(s[1])}">`).join('')}
+    ${shots.map((s, i) => `<img ${i ? `data-src="${M(s[0])}"` : `src="${M(s[0])}" loading="lazy"`} alt="${esc(p.name)}: ${esc(s[1])}" decoding="async" class="${i ? '' : 'on'}" data-cap="${esc(s[1])}">`).join('')}
     <div class="m-bar glass"><span class="m-cap">Cover</span><span class="m-dots">${shots.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</span></div>
   </div>`;
 }
@@ -206,7 +209,7 @@ function mediaHTML(p) {
 function cardHTML(p, i) {
   const facts = (p.facts || []).slice(0, 2).map((f) => `<div class="fact"><b>${esc(f[0])}</b><small>${esc(f[1])}</small></div>`).join('');
   return `<article class="card" data-i="${i}" data-id="${p.id}">
-    <button class="card-head" aria-expanded="false"><span class="no">${String(i + 1).padStart(2, '0')}</span><img class="th" src="${p.cover}" alt="" loading="lazy"><span class="t">${esc(p.name)}</span>${p.client ? '<span class="client">Client work</span>' : ''}<span class="d">${esc(p.line)}</span><span class="tag">${esc(p.tag)}</span></button>
+    <button class="card-head" aria-expanded="false"><span class="no">${String(i + 1).padStart(2, '0')}</span><img class="th" src="${M(p.cover)}" alt="" loading="lazy" decoding="async"><span class="t">${esc(p.name)}</span>${p.client ? '<span class="client">Client work</span>' : ''}<span class="d">${esc(p.line)}</span><span class="tag">${esc(p.tag)}</span></button>
     <div class="card-body"><div class="card-grid">
       ${mediaHTML(p)}
       <div class="card-info">
@@ -231,11 +234,11 @@ function renderWork() {
     if (s.id === 'motion') {
       const shots = ['img/work/staza/1-mobile.webp', 'img/work/haulr/1-live-board.webp', 'img/work/fanfare/1-overview.webp', 'img/work/nullorbit/1-menu.webp', 'img/work/afterglow/1-posters.webp', 'img/work/aaro/1-logo.webp'];
       inner = `<div class="reel glass">
-        <a class="reel-screen" href="showreel.html" data-cursor="Play" aria-label="Play the showreel">
-          <div class="slides">${shots.map((k, i) => `<img src="${k}" alt="" loading="lazy" class="${i ? '' : 'on'}">`).join('')}</div>
+        <a class="reel-screen" href="/showreel" data-cursor="Play" aria-label="Play the showreel">
+          <div class="slides">${shots.map((k, i) => `<img src="${M(k)}" alt="" loading="lazy" decoding="async" class="${i ? '' : 'on'}">`).join('')}</div>
           <span class="play"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg></span>
         </a>
-        <div class="reel-copy"><span class="tag">Motion</span><h3 style="margin-top:12px">Showreel 2026</h3><p>A cut of product, brand and game work in motion, scored with an original track made in the browser. Plays in landscape or vertical, and downloads in full HD.</p><a class="btn btn-accent" href="showreel.html">Watch the reel</a></div>
+        <div class="reel-copy"><span class="tag">Motion</span><h3 style="margin-top:12px">Showreel 2026</h3><p>A cut of product, brand and game work in motion, scored with an original track made in the browser. Plays in landscape or vertical, and downloads in full HD.</p><a class="btn btn-accent" href="/showreel">Watch the reel</a></div>
       </div>`;
     } else {
       inner = `<div class="deck glass" data-deck>
@@ -342,8 +345,8 @@ function renderPricing() {
 }
 
 function renderBlog() {
-  $('.posts').innerHTML = POSTS.map((p) => `<a class="post glass" href="blog/${p.slug}.html" data-reveal data-cursor="Read">
-    <div class="art"><img src="${p.img}" alt="" loading="lazy"></div>
+  $('.posts').innerHTML = POSTS.map((p) => `<a class="post glass" href="/blog/${p.slug}" data-reveal data-cursor="Read">
+    <div class="art"><img src="${M(p.img)}" alt="" loading="lazy" decoding="async"></div>
     <div class="pb"><span class="cat">${p.cat}</span><h3>${p.t}</h3><p>${p.d}</p>
     <div class="byline"><img src="img/me.webp" alt=""><span><b>Jaiye Oluwatishe</b>${p.date} · ${p.mins} min read</span></div></div>
   </a>`).join('');
@@ -437,16 +440,21 @@ function playSlides(card, on) {
   const box = $('.card-media.slides', card);
   if (!box) return;
   clearInterval(slideTimers.get(card));
-  if (!on || !motionOn()) return;
   const imgs = $$('img', box), dots = $$('.m-dots i', box), cap = $('.m-cap', box);
+  const load = (k) => { const im = imgs[k]; if (im && im.dataset.src) { im.src = im.dataset.src; delete im.dataset.src; } };
   let i = imgs.findIndex((x) => x.classList.contains('on'));
   const show = (n) => {
     imgs[i].classList.remove('on'); dots[i] && dots[i].classList.remove('on');
     i = (n + imgs.length) % imgs.length;
+    load(i); load((i + 1) % imgs.length);
     imgs[i].classList.add('on'); dots[i] && dots[i].classList.add('on'); cap.textContent = imgs[i].dataset.cap;
   };
   box._show = show; box._idx = () => i;
-  slideTimers.set(card, setInterval(() => { if (!document.hidden) show(i + 1); }, 2600));
+  if (!on) return;
+  if (innerWidth <= 640) return;
+  load((i + 1) % imgs.length);
+  if (!motionOn()) return;
+  slideTimers.set(card, setInterval(() => { if (!document.hidden && box.getBoundingClientRect().top < innerHeight) show(i + 1); }, 2600));
 }
 
 function initDecks() {
@@ -557,9 +565,9 @@ function initSettings() {
 let cmdItems = [], cmdSel = 0;
 function cmdData() {
   const items = [];
-  REAL.forEach((p) => items.push({ g: 'Projects', t: p.name, s: `${SECTIONS.find((x) => x.id === p.sec).label} · ${p.line}`, img: p.cover, prev: p.screens[0][0], run: () => go(pageOf(p)) }));
+  REAL.forEach((p) => items.push({ g: 'Projects', t: p.name, s: `${SECTIONS.find((x) => x.id === p.sec).label} · ${p.line}`, img: M(p.cover), prev: M(p.screens[0][0]), run: () => go(pageOf(p)) }));
   SECTIONS.forEach((s) => items.push({ g: 'Work sections', t: s.label, s: s.intro, ico: '▦', run: () => { closeSheets(); window.selectSection(s.id); $('#work').scrollIntoView({ behavior: 'smooth' }); } }));
-  [['All case studies', 'work/index.html'], ['Showreel', 'showreel.html']].forEach(([t, h]) => items.push({ g: 'Pages', t, s: 'Open page', ico: '↗', run: () => go(h) }));
+  [['All case studies', '/work'], ['Showreel', '/showreel']].forEach(([t, h]) => items.push({ g: 'Pages', t, s: 'Open page', ico: '↗', run: () => go(h) }));
   [['About', '#about'], ['Skills', '#skills'], ['Experience', '#experience'], ['Pricing', '#pricing'], ['Blog', '#blog'], ['FAQ', '#faq'], ['Contact', '#contact']].forEach(([t, h]) => items.push({ g: 'Go to', t, s: 'Jump to section', ico: '↘', run: () => { closeSheets(); $(h).scrollIntoView({ behavior: 'smooth' }); } }));
   items.push(
     { g: 'Actions', t: 'Chat on WhatsApp', s: '+234 802 636 4572', ico: '💬', run: () => window.open(wa(), '_blank') },
@@ -568,7 +576,7 @@ function cmdData() {
     { g: 'Actions', t: 'Toggle dark mode', s: 'Switch appearance', ico: '◐', run: () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark') },
     { g: 'Actions', t: 'Take a penalty', s: 'A tiny Touchline game', ico: '⚽', run: () => { closeSheets(); setTimeout(() => openSheet('game'), 60); } },
   );
-  POSTS.forEach((p) => items.push({ g: 'Blog', t: p.t, s: `${p.cat} · ${p.mins} min read`, img: p.img, prev: p.img, run: () => go(`blog/${p.slug}.html`) }));
+  POSTS.forEach((p) => items.push({ g: 'Blog', t: p.t, s: `${p.cat} · ${p.mins} min read`, img: M(p.img), prev: M(p.img), run: () => go(`/blog/${p.slug}`) }));
   return items;
 }
 let ALL_CMD = [];
