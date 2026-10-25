@@ -62,6 +62,7 @@
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, pad.width, pad.height);
       ctx.setTransform(pad.width / W, 0, 0, pad.height / H, 0, 0);
       ctx.lineWidth = 3.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#16171A';
+      pad.parentElement.classList.toggle('drawn', strokes.length > 0);
       strokes.forEach((s) => { ctx.beginPath(); s.forEach(([x, y], k) => (k ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); if (s.length === 1) ctx.lineTo(s[0][0] + .1, s[0][1]); ctx.stroke(); });
     };
     pad.addEventListener('pointerdown', (e) => { pad.setPointerCapture(e.pointerId); cur = [toXY(e)]; strokes.push(cur); redraw(); });
@@ -76,13 +77,20 @@
       el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${s.d.replace(/[^MLml0-9 .\-]/g, '')}"/></svg><b></b><small>${d}</small>`;
       $('b', el).textContent = s.name || 'Anonymous'; return el;
     };
-    const setCount = (n) => { if (count) count.textContent = n.toLocaleString(); };
+    const no = $('.pad .no');
+    const setCount = (n) => { if (count) count.textContent = n.toLocaleString(); if (no) no.textContent = n + 1; };
+    // empty dashed slots keep the wall from looking bare
+    const slots = () => {
+      $$('.sig.slot', wall).forEach((s) => s.remove());
+      const need = Math.max(0, 8 - $$('.sig', wall).length);
+      for (let k = 0; k < need; k++) { const s = document.createElement('div'); s.className = 'sig slot'; s.textContent = k === 0 ? 'Your signature here' : ''; wall.appendChild(s); }
+    };
     let total = 0;
     fetch('/api/guestbook').then((r) => (r.ok ? r.json() : Promise.reject(r.status))).then((j) => {
       total = j.count || j.items.length; setCount(total);
       wall.innerHTML = ''; j.items.forEach((s) => wall.appendChild(card(s)));
-      if (!j.items.length) wall.innerHTML = '<p style="color:var(--muted)">No signatures yet. Be the first to sign.</p>';
-    }).catch(() => { wall.innerHTML = '<p style="color:var(--muted)">The wall is resting. Try again in a moment.</p>'; });
+      slots();
+    }).catch(() => { wall.innerHTML = ''; slots(); });
     $('.sign form').addEventListener('submit', (e) => {
       e.preventDefault();
       const name = $('.sign input').value.trim().slice(0, 40);
@@ -95,7 +103,7 @@
         .then((r) => (r.ok ? r.json() : r.json().then((j) => Promise.reject(j.error || 'error'))))
         .then((s) => {
           const empty = wall.querySelector('p'); if (empty) empty.remove();
-          wall.prepend(card(s, true)); setCount(++total);
+          wall.prepend(card(s, true)); setCount(++total); slots();
           strokes = []; redraw(); $('.sign input').value = ''; msg.textContent = 'Signed. Thank you, ' + name + '.';
         })
         .catch((err) => { msg.textContent = typeof err === 'string' && err !== 'error' ? err : 'Could not sign right now. Please try again.'; });
