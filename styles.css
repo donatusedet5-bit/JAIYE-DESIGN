@@ -539,3 +539,27 @@ html.no-loader .loader{display:none}
 .pad .hint{display:none}
 .burger{box-shadow:0 0 0 1px rgba(255,255,255,.2)}
 .hire{box-shadow:0 0 0 1px rgba(255,255,255,.22),0 18px 40px -16px rgba(27,43,94,.6)}
+
+/* =================== v2.4 =================== */
+/* former header: no pills */
+.brand{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0;box-shadow:none;border-radius:0;color:#fff;mix-blend-mode:difference}
+.nav{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;padding:0;gap:6px;color:var(--ink)}
+.nav a{padding:10px 14px}
+/* process artifacts */
+.hstep .pic.card,.hstep .pic.chart{background:var(--paper);border:1px solid var(--line);padding:16px 18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink-2)}
+.hstep .pic i{font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hstep .pic.card i:not(:first-child){margin-top:6px}
+.hstep .pic.card p{font-size:14px;color:var(--ink);line-height:1.35}
+.hstep .pic.card ul{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:9px}
+.hstep .pic.card li{display:flex;align-items:center;gap:10px;color:var(--ink)}
+.hstep .pic.card li span{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--blue);position:relative;flex:0 0 auto}
+.how.in .hstep .pic.card li span::after{content:"";position:absolute;inset:2px;background:var(--blue);border-radius:1px;transform:scale(0);animation:tick .4s var(--out) forwards}
+.how.in .hstep .pic.card li:nth-child(1) span::after{animation-delay:.9s}.how.in .hstep .pic.card li:nth-child(2) span::after{animation-delay:1.2s}.how.in .hstep .pic.card li:nth-child(3) span::after{animation-delay:1.5s}.how.in .hstep .pic.card li:nth-child(4) span::after{animation-delay:1.8s}
+@keyframes tick{to{transform:scale(1)}}
+.hstep .pic.chart .bars{flex:1;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid var(--line);padding-top:8px}
+.hstep .pic.chart .bars span{flex:1;height:0;background:var(--blue);opacity:.25;border-radius:3px 3px 0 0;transition:height 1.2s var(--out)}
+.hstep .pic.chart .bars span:nth-child(n+4){opacity:1}
+.how.in .hstep .pic.chart .bars span{height:var(--h)}
+.how.in .hstep .pic.chart .bars span:nth-child(2){transition-delay:.1s}.how.in .hstep .pic.chart .bars span:nth-child(3){transition-delay:.2s}.how.in .hstep .pic.chart .bars span:nth-child(4){transition-delay:.4s}.how.in .hstep .pic.chart .bars span:nth-child(5){transition-delay:.5s}.how.in .hstep .pic.chart .bars span:nth-child(6){transition-delay:.6s}
+.hstep .pic.chart p{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.hstep .pic.chart p b{font-weight:500}
