@@ -53,8 +53,7 @@
   const hire = $('.hire'), contact = $('#contact');
   if (hire) {
     // visible from the start (after the preloader), so the way to reach me is always one tap away
-    let seen = false; try { seen = !!sessionStorage.getItem('seen2'); sessionStorage.setItem('seen2', '1'); } catch (e) {}
-    setTimeout(() => hire.classList.add('on'), document.querySelector('.loader') && !seen ? 2600 : 700);
+    setTimeout(() => hire.classList.add('on'), document.querySelector('.loader') ? 3400 : 700);
     if (contact) new IntersectionObserver((es) => document.body.classList.toggle('contact-open', es[0].isIntersecting), { threshold: 0.15 }).observe(contact);
   }
   // in-page links to #contact scroll smoothly

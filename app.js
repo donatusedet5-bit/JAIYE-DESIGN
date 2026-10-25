@@ -16,14 +16,17 @@
   /* ---------- preloader (home, first visit) or curtain reveal ---------- */
   const loader = $('.loader'), curtain = $('.curtain');
   const ready = () => document.body.classList.add('ready');
-  if (loader && !store.get('seen') && !reduce) {
+  // greet on every fresh visit to the home page (not when clicking around inside the site)
+  let internal = false; try { internal = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+  if (loader && !internal) {
     store.set('seen', '1');
     const words = ['Hello', 'Bawo ni', 'Kedu', 'Sannu', 'Bonjour', 'Hola', 'Ciao', 'Olá', 'Hallo', 'Hej', 'Namaste', 'Konnichiwa', 'Annyeong', 'Nǐ hǎo', 'Marhaba', 'Jambo', 'Akwaaba', 'Sawubona', 'Shalom', 'Merhaba', 'Privet', 'Salut'];
     const out = $('p', loader); let i = 0;
     const tick = () => {
       out.textContent = words[i++];
       if (i < words.length) setTimeout(tick, i === 1 ? 700 : 110);
-      else setTimeout(() => { loader.classList.add('out'); setTimeout(ready, 450); setTimeout(() => loader.remove(), 1100); }, 260);
+      // phones with "reduce motion" on get a gentle fade instead of the slide-up
+      else setTimeout(() => { if (reduce) { loader.style.transition = 'opacity .5s'; loader.style.opacity = '0'; } else loader.classList.add('out'); setTimeout(ready, 450); setTimeout(() => loader.remove(), 1100); }, 260);
     };
     tick();
   } else {

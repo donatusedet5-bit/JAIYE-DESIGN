@@ -637,3 +637,17 @@ html[data-mode="pm"] .skills > div:nth-child(2){order:-1}
   .lb-prev,.lb-next{position:absolute;bottom:60px}
   .lb-prev{left:calc(50% - 70px)}.lb-next{right:calc(50% - 70px)}
 }
+/* Discover checklist: rows spread out evenly, never bunched at the top */
+.hstep .pic.card ul{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:0;margin-top:8px}
+.hstep .pic.card li{padding:9px 0;border-top:1px solid var(--line)}
+.hstep .pic.card li:last-child{border-bottom:1px solid var(--line)}
+@media (max-width:900px){
+  .hstep .pic.card,.hstep .pic.chart{aspect-ratio:auto;padding:20px 20px 22px}
+  .hstep .pic.card ul{flex:none;margin-top:12px}
+  .hstep .pic.card li{padding:14px 0;font-size:16px;gap:14px}
+  .hstep .pic.card li span{width:18px;height:18px;border-radius:5px}
+  .hstep .pic.card li span::after{inset:3px}
+  .hstep .pic.chart{min-height:220px}
+}
+@media (min-width:901px){.hstep .pic.card li{padding:6px 0;font-size:13.5px}.hstep .pic.card ul{margin-top:4px}}
+@media (min-width:901px){.hstep .pic.card li:last-child{border-bottom:0}}
