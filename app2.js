@@ -24,6 +24,31 @@
   const ct = $('#contact');
   if (ct) new IntersectionObserver((es) => document.body.classList.toggle('over-dark', es[0].isIntersecting), { rootMargin: '0px 0px -92% 0px' }).observe(ct);
 
+  /* motion page: videos load and play only while on screen; click opens full screen */
+  const mvs = $$('video.mv');
+  if (mvs.length) {
+    const vio = new IntersectionObserver((es) => es.forEach((e) => {
+      const v = e.target;
+      if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; if (!reduce) v.play().catch(() => {}); } else v.pause();
+    }), { threshold: 0.25 });
+    mvs.forEach((v) => vio.observe(v));
+    const lb = $('.lightbox'), lv = $('video', lb), cap = $('.lb-cap', lb), tiles = $$('.mtile');
+    let cur = 0;
+    const open = (i) => {
+      const vis = tiles.filter((t) => !t.hidden); if (!vis.length) return;
+      cur = (i + vis.length) % vis.length; const t = vis[cur], v = $('video', t);
+      lv.src = v.dataset.src; lv.poster = v.poster; cap.textContent = $('figcaption span', t).textContent;
+      lb.hidden = false; document.body.classList.add('lb-open'); lv.play().catch(() => {});
+    };
+    const close = () => { lb.hidden = true; document.body.classList.remove('lb-open'); lv.pause(); lv.removeAttribute('src'); lv.load(); };
+    tiles.forEach((t) => $('.mv-open', t).addEventListener('click', () => open(tiles.filter((x) => !x.hidden).indexOf(t))));
+    $('.lb-close', lb).addEventListener('click', close);
+    $('.lb-prev', lb).addEventListener('click', () => open(cur - 1));
+    $('.lb-next', lb).addEventListener('click', () => open(cur + 1));
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+    addEventListener('keydown', (e) => { if (lb.hidden) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') open(cur + 1); if (e.key === 'ArrowLeft') open(cur - 1); });
+  }
+
   /* floating "Let's talk" CTA: after the hero, hidden over the contact section */
   const hire = $('.hire'), contact = $('#contact');
   if (hire) {
