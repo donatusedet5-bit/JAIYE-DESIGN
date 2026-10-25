@@ -106,7 +106,11 @@
       timer = setInterval(() => { stage = (stage + 1) % 3; imgs.forEach((im, i) => im.classList.toggle('on', i === stage)); chip.textContent = names[stage]; }, 650);
     };
     rowsEl.forEach((r, i) => {
-      r.addEventListener('pointerenter', () => { idx = i; pv.classList.add('on'); slides.style.transform = `translateY(${-i * 100}%)`; play(slides.children[i]); });
+      r.addEventListener('pointerenter', () => {
+        // rows can be reordered (Designer / PM view), so find the matching slide by id
+        const all = [...slides.children], k = Math.max(0, all.findIndex((s) => s.dataset.id === r.dataset.id));
+        idx = k; pv.classList.add('on'); slides.style.transform = `translateY(${-k * 100}%)`; play(all[k]);
+      });
       r.addEventListener('pointerleave', () => { pv.classList.remove('on'); clearInterval(timer); });
     });
     addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; }, { passive: true });

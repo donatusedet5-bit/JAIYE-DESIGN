@@ -563,3 +563,37 @@ html.no-loader .loader{display:none}
 .how.in .hstep .pic.chart .bars span:nth-child(2){transition-delay:.1s}.how.in .hstep .pic.chart .bars span:nth-child(3){transition-delay:.2s}.how.in .hstep .pic.chart .bars span:nth-child(4){transition-delay:.4s}.how.in .hstep .pic.chart .bars span:nth-child(5){transition-delay:.5s}.how.in .hstep .pic.chart .bars span:nth-child(6){transition-delay:.6s}
 .hstep .pic.chart p{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
 .hstep .pic.chart p b{font-weight:500}
+
+/* =================== v2.5 =================== */
+/* name as the logo, readable on the photo */
+.brand{mix-blend-mode:normal;color:var(--ink);font-weight:600;font-size:18px;letter-spacing:-.02em;gap:6px;text-shadow:0 1px 14px rgba(255,255,255,.75);transition:color .4s}
+.brand .c{display:inline-block;transition:transform .9s var(--ease)}
+.brand:hover .c{transform:rotate(360deg)}
+.brand .roll{display:inline-grid;overflow:hidden;height:1.3em;line-height:1.3em}
+.brand .roll span{grid-area:1/1;transition:transform .6s var(--ease)}
+.brand .roll span + span{transform:translateY(110%)}
+.brand:hover .roll span:first-child{transform:translateY(-110%)}
+.brand:hover .roll span + span{transform:none}
+.over-dark .brand,.menu-open .brand{color:#fff;text-shadow:none}
+.nav{font-weight:600;color:var(--ink)}
+.nav a{text-shadow:0 1px 14px rgba(255,255,255,.8)}
+/* Designer / PM switch */
+.top{gap:18px}
+.mode{display:inline-flex;padding:4px;border-radius:999px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 0 0 1px var(--line);margin-right:auto;margin-left:clamp(200px,20vw,280px)}
+.mode button{height:38px;padding:0 16px;border-radius:999px;font-size:14.5px;font-weight:600;color:var(--ink-2);transition:background .35s var(--ease),color .35s}
+.mode button[aria-pressed="true"]{background:var(--blue);color:#fff}
+html:not([data-mode="pm"]) .m-pm,html[data-mode="pm"] .m-design{display:none!important}
+html[data-mode="pm"] .skills > div:nth-child(2){order:-1}
+.hstep .pic .road{display:grid;grid-template-columns:auto 1fr;gap:9px 12px;align-items:center;margin-top:6px;font-size:14px;color:var(--ink)}
+.hstep .pic .road b{font-weight:600;font-size:12px;color:#fff;background:var(--blue);border-radius:999px;padding:3px 10px;text-align:center}
+.hstep .pic .road b:nth-of-type(2){opacity:.7}.hstep .pic .road b:nth-of-type(3){opacity:.45}
+@media (max-width:900px){
+  .top{flex-wrap:wrap}
+  .mode{position:absolute;left:max(var(--gut),env(safe-area-inset-left,0px));top:70px;margin:0}
+  .mode button{height:34px;padding:0 13px;font-size:13.5px}
+  .brand{font-size:16px}
+}
+.brand{top:calc(clamp(22px,3vw,36px) + 9px)}
+@media (max-width:900px){.brand{top:calc(clamp(22px,3vw,36px) + 2px)}}
+/* like Dennis: the name sits in the header and scrolls away; the round menu button takes over */
+.brand{position:absolute}

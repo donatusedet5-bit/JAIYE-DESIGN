@@ -3,6 +3,27 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* Designer / Product Manager view */
+  const O = window.ORDERS || {};
+  const reorder = (box, ids) => { const kids = [...box.children]; ids.forEach((id) => { const el = kids.find((c) => c.dataset.id === id); if (el) box.appendChild(el); }); };
+  const setMode = (m, save) => {
+    if (m === 'pm') document.documentElement.dataset.mode = 'pm'; else delete document.documentElement.dataset.mode;
+    $$('.mode button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.mode === (m === 'pm' ? 'pm' : 'design')));
+    const key = m === 'pm' ? 'pm' : 'design';
+    $$('ul.rows').forEach((ul) => reorder(ul, ul.children.length <= 6 && O.featured ? O.featured[key] : O[key] || []));
+    $$('.grid').forEach((g) => reorder(g, O[key] || []));
+    // reveal anything that just became visible
+    $$('[data-words],.rv').forEach((el) => { if (el.offsetParent && el.getBoundingClientRect().top < innerHeight) el.classList.add('in'); });
+    $$('.how').forEach((h) => { if (h.offsetParent && h.getBoundingClientRect().top < innerHeight) h.classList.add('in'); });
+    if (save) { try { localStorage.setItem('mode', key); } catch (e) {} }
+  };
+  $$('.mode button').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode, true)));
+  setMode(document.documentElement.dataset.mode === 'pm' ? 'pm' : 'design', false);
+
+  /* brand turns white over the dark contact section */
+  const ct = $('#contact');
+  if (ct) new IntersectionObserver((es) => document.body.classList.toggle('over-dark', es[0].isIntersecting), { rootMargin: '0px 0px -92% 0px' }).observe(ct);
+
   /* floating "Let's talk" CTA: after the hero, hidden over the contact section */
   const hire = $('.hire'), contact = $('#contact');
   if (hire) {
