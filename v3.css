@@ -613,3 +613,69 @@ html.fm .page * { cursor: default; }
 .bar .go:hover { color: #1B2B5E; }
 .flabel { color: #5F6066; }
 .flabel b { color: #16171A; }
+
+/* =====================================================================
+   PHONES: build strip, one-button dock, tap Inspect, lighter rendering
+   ===================================================================== */
+.fstrip { position: fixed; z-index: 54; top: 0; left: 0; right: 0; height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 22px; background: rgba(255,255,255,.97); border-bottom: 1px solid #E6E6E6; color: #1E1E1E; font: 500 12px/1 "Hanken Grotesk", system-ui, sans-serif; white-space: nowrap; overflow: hidden; pointer-events: none; transition: transform .45s cubic-bezier(.76,0,.24,1); }
+.fstrip.hide { transform: translateY(-101%); }
+.fstrip .ic { display: inline-grid; width: 12px; height: 12px; color: #8A8A8A; flex: none; }
+.fstrip .ic svg { width: 12px; height: 12px; }
+.fstrip b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 0 1 auto; }
+.fstrip .wh { flex: none; padding: 3px 5px; border-radius: 3px; background: #0D99FF; color: #fff; font-size: 10px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.fstrip .mt { margin-left: auto; display: flex; align-items: center; gap: 6px; color: #8A8A8A; font-size: 11px; overflow: hidden; flex: 0 1 auto; min-width: 0; }
+.fstrip .mt em { font-style: normal; overflow: hidden; text-overflow: ellipsis; }
+.fstrip .mt s { width: 10px; height: 10px; border-radius: 2px; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+@media (max-width: 640px) {
+  .fstrip { top: 16px; left: 14px; }
+  .cur svg { filter: none; }
+  .cur .tg, .you { box-shadow: none; }
+  .sel { will-change: auto; }
+}
+/* dock: one round button on phones and touch screens */
+.dk-more { display: none; }
+@media (max-width: 640px), (hover: none) {
+  .dock { flex-direction: column; align-items: flex-end; gap: 8px; }
+  .dock > button:not(.dk-more) { display: none; }
+  .dock.open > button:not(.dk-more):not([hidden]), .dock.insp-on > .dk-insp { display: flex; }
+  .dock .dk-more { display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border-radius: 50%; }
+  .dk-more .x { display: none; }
+  .dock.open .dk-more .x { display: block; } .dock.open .dk-more .o { display: none; }
+  .dock.open > button:not(.dk-more) { animation: dkIn .2s ease both; }
+  .dock button { height: 42px; }
+}
+@keyframes dkIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* tap Inspect: the info card docks to the bottom of the screen */
+.insp.touch .icard { left: 12px; right: 84px; top: auto; bottom: 14px; min-width: 0; max-width: none; transform: none; }
+/* Figma mode on phones: a bottom sheet over the live page */
+body.fm-m { padding-bottom: 58vh; }
+body.fm-m .page, body.fm-m .page * { cursor: pointer; }
+.fsheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; height: 56vh; display: flex; flex-direction: column; background: #fff; color: #1E1E1E; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 40px rgba(22,23,26,.18); font: 400 13px/1.4 "Hanken Grotesk", system-ui, sans-serif; transform: translateY(105%); transition: transform .35s cubic-bezier(.2,.8,.2,1), height .3s; }
+.fsheet.in { transform: none; }
+.fsheet.min { height: 132px; }
+.fs-hd { flex: none; padding: 0 14px; border-bottom: 1px solid #EDEDED; }
+.fs-grab { display: block; width: 100%; height: 18px; }
+.fs-grab i { display: block; width: 36px; height: 4px; margin: 7px auto 0; border-radius: 2px; background: #D4D4D4; }
+.fs-top { display: flex; align-items: center; gap: 6px; height: 40px; }
+.fs-top b { font-weight: 600; font-size: 14px; }
+.fs-top span { color: #8A8A8A; font-size: 12px; margin-right: auto; white-space: nowrap; }
+@media (max-width: 360px) { .fs-top span { display: none; } .fs-top b { margin-right: auto; } }
+.fs-top button { height: 32px; padding: 0 11px; border-radius: 8px; background: #F0F0F0; font-size: 12.5px; font-weight: 500; display: inline-flex; align-items: center; gap: 5px; }
+.fs-top button:disabled { opacity: .4; }
+.fs-top .go { background: #16171A; color: #fff; }
+.fs-tabs { display: flex; gap: 4px; padding: 6px 0 8px; }
+.fs-tabs button { flex: 1; height: 32px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #5A5A5A; }
+.fs-tabs button[aria-selected="true"] { background: #E5F4FF; color: #0A6FC2; font-weight: 600; }
+.fs-body { flex: 1; overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding-bottom: 24px; }
+.fsheet .pp-sec { padding: 14px; }
+.fsheet .pp .fonts b { font-size: 22px; }
+.fsheet .pp .swatches button { width: 34px; height: 34px; }
+.fsheet .pp .seg button { height: 34px; font-size: 12.5px; }
+.fsheet .pp .step button { width: 38px; height: 38px; }
+.fsheet .pp-acts button { height: 36px; padding: 0 12px; font-size: 13px; }
+.fsheet .pp textarea { font-size: 16px; } /* 16px stops iOS zooming in on focus */
+.fsheet .fp-list { padding: 6px 0; }
+.fsheet .lr { height: 40px; cursor: pointer; animation: none; font-size: 13px; }
+.fsheet .lr.is-sel { background: #E5F4FF; }
+.fsheet .lr .eye { opacity: 1; width: 34px; height: 34px; }
+body.fm-m .fm-toast { top: 12px; }

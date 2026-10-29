@@ -53,6 +53,7 @@
     const io = new IntersectionObserver((ents) => {
       ents.forEach((en) => {
         const v = $('video', en.target);
+        if (en.isIntersecting && document.body.classList.contains('building')) return; // no video decoding while the page is being built
         if (en.isIntersecting) {
           if (!v.src) v.src = en.target.dataset.src;
           if (!v.dataset.w) { v.dataset.w = 1; v.addEventListener('timeupdate', () => { if (v.currentTime > 0.15) { const p = $('.pic img', en.target); if (p) p.classList.add('gone'); } }); }
@@ -61,6 +62,7 @@
       });
     }, { threshold: 0.5 });
     mvs.forEach((m) => io.observe(m));
+    document.addEventListener('v3:built', () => mvs.forEach((m) => { io.unobserve(m); io.observe(m); }));
     const lb = $('.lb'), lv = $('video', lb), lt = $('p', lb);
     let last = null;
     const close = () => { lb.classList.remove('on'); lv.pause(); lv.removeAttribute('src'); lv.load(); if (last) last.focus(); };

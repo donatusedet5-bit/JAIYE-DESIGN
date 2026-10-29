@@ -44,11 +44,17 @@
 
   /* ---------------------------------------------------------------- dock: Inspect + Replay */
   const dock = el('div', 'dock');
-  const inspBtn = fine ? el('button', 'dk-insp', '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 5V2.5H5M11 2.5h2.5V5M13.5 11v2.5H11M5 13.5H2.5V11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 6l4.6 1.8-2 .8-.8 2z" fill="currentColor"/></svg>Inspect') : null;
+  const inspBtn = el('button', 'dk-insp','<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 5V2.5H5M11 2.5h2.5V5M13.5 11v2.5H11M5 13.5H2.5V11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 6l4.6 1.8-2 .8-.8 2z" fill="currentColor"/></svg>Inspect');
   const replayBtn = el('button', 'dk-rp', '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.7-4M2.5 2.5V5h2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Replay build');
   replayBtn.type = 'button'; replayBtn.setAttribute('aria-label', 'Replay the page build');
   if (inspBtn) { inspBtn.type = 'button'; inspBtn.setAttribute('aria-pressed', 'false'); inspBtn.title = 'Hover anything to see its size, spacing and type. Esc to stop.'; dock.appendChild(inspBtn); }
   dock.appendChild(replayBtn);
+  // phones: everything sits behind one round button
+  const moreBtn = el('button', 'dk-more', '<svg class="o" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="2.5" y="2.5" width="5.5" height="5.5" rx="1.4" fill="currentColor"/><rect x="10" y="2.5" width="5.5" height="5.5" rx="2.75" fill="currentColor"/><rect x="2.5" y="10" width="5.5" height="5.5" rx="2.75" fill="currentColor"/><path d="M12.75 10v5.5M10 12.75h5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><svg class="x" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>');
+  moreBtn.type = 'button'; moreBtn.setAttribute('aria-label', 'Site tools: edit, inspect, replay'); moreBtn.setAttribute('aria-expanded', 'false');
+  dock.appendChild(moreBtn);
+  moreBtn.addEventListener('click', () => { const o = !dock.classList.contains('open'); dock.classList.toggle('open', o); moreBtn.setAttribute('aria-expanded', o); });
+  dock.addEventListener('click', (e) => { if (e.target.closest('button') && !e.target.closest('.dk-more')) { dock.classList.remove('open'); moreBtn.setAttribute('aria-expanded', 'false'); } });
   body.appendChild(dock);
   const showDock = () => dock.classList.add('on');
   const hideDock = () => dock.classList.remove('on');
@@ -304,8 +310,41 @@
       renderPP('Text', { ...base, icon: 'text', font: { fam, wt: WEIGHT[cs.fontWeight] || cs.fontWeight, size: px(cs.fontSize), lh, ls }, fill: { c: cs.color, label: hex(cs.color).slice(1) } });
     };
     const ppLive = () => {
+      if (strip) { stripLive(); return; }
       if (!ppTask || !ppK.w || ppTask.cw == null) return;
       ppK.w.textContent = Math.round(ppTask.cw); ppK.h.textContent = Math.round(ppTask.ch);
+    };
+    /* ---------- phones: a slim Figma strip in place of the panels ---------- */
+    let strip = null, stripT = null, stripWH = '';
+    if (!panels) {
+      strip = el('div', 'fstrip', '<i class="ic"></i><b></b><span class="wh"></span><span class="mt"><em></em><s></s></span>');
+      strip.setAttribute('aria-hidden', 'true');
+      body.appendChild(strip);
+    }
+    const SP = strip && { ic: $('.ic', strip), nm: $('b', strip), wh: $('.wh', strip), mt: $('.mt em', strip), sw: $('.mt s', strip) };
+    const stripFor = (t) => {
+      if (!strip) return;
+      stripT = t; stripWH = '';
+      let icon = 'frame', name = 'Home', meta = '', sw = '';
+      if (t.type === 'gv') { icon = 'guide'; name = 'Layout guides'; meta = '1 column'; }
+      else if (t.type === 'gh') { icon = 'auto'; name = blockName(t.block); meta = 'Auto layout · Vertical'; }
+      else if (t.type === 'sp') { icon = 'space'; name = 'Spacing'; meta = Math.round(t.r.h) + ' between sections'; }
+      else if (t.type === 'al') { icon = 'auto'; name = 'Auto layout gaps'; meta = 'Gap ' + t.gaps.map((g) => g.v).filter((v, i, a) => a.indexOf(v) === i).join(' · '); }
+      else {
+        const [ic, nm] = nameOf(t.node); icon = ic; name = nm;
+        const cs = getComputedStyle(t.node);
+        if (t.type === 'img') meta = 'Image · radius ' + px(cs.borderTopLeftRadius);
+        else { meta = `${cs.fontFamily.split(',')[0].replace(/["']/g, '')} · ${WEIGHT[cs.fontWeight] || cs.fontWeight} · ${px(cs.fontSize)}`; sw = cs.color; }
+      }
+      SP.ic.innerHTML = ICON[icon] || ICON.frame; SP.nm.textContent = name; SP.mt.textContent = meta;
+      SP.sw.style.display = sw ? '' : 'none'; if (sw) SP.sw.style.background = sw;
+      stripLive();
+    };
+    const stripLive = () => {
+      if (!stripT) return;
+      const t = stripT, w = t.cw != null ? t.cw : t.r.w, h = t.ch != null ? t.ch : t.r.h;
+      const s = `${Math.round(w)} × ${Math.round(h)}`;
+      if (s !== stripWH) { stripWH = s; SP.wh.textContent = s; }
     };
     if (ppBody) renderPP('Home', { x: 0, y: 0, w: Math.round(vw), h: Math.round(docH), icon: 'frame', fill: { c: '#FFFFFF', label: 'FFFFFF' }, note: ['Frame', 'Desktop · ' + Math.round(vw)] });
 
@@ -320,7 +359,7 @@
       const side = Math.floor(Math.random() * 4), sy = scrollY;
       const x = side === 0 ? -20 : side === 1 ? vw + 20 : rnd(0, vw);
       const y = sy + (side === 2 ? -20 : side === 3 ? vh + 20 : rnd(0, vh));
-      const a = { el: n, tag: n.lastChild, x, y, vx: 0, vy: 0, tx: x, ty: y, task: null, ph: 0, pt: 0, wander: 0, k: rnd(45, 75), base: ROLES[i % ROLES.length], keepTag: i < 10, label: null };
+      const a = { el: n, tag: n.lastChild, x, y, vx: 0, vy: 0, tx: x, ty: y, task: null, ph: 0, pt: 0, wander: 0, k: rnd(45, 75), base: ROLES[i % ROLES.length], keepTag: i < (isPhone ? 5 : 10), label: null };
       setTag(a, a.keepTag ? a.base : '');
       agents.push(a);
       return a;
@@ -377,10 +416,14 @@
       cLeft.width = rLeft.clientWidth * dpr; cLeft.height = rLeft.clientHeight * dpr;
     };
     sizeCanvas();
+    let rKey = '';
     const drawRulers = () => {
+      const sx = scrollX + RL, sy = scrollY;
+      // only repaint when the scroll or the highlighted layer changed
+      const key = `${Math.round(sy)}|${Math.round(sx)}|${hl ? hl.x + ',' + hl.y + ',' + hl.w + ',' + hl.h : ''}|${cTop.width}`;
+      if (key === rKey) return; rKey = key;
       const ct = cTop.getContext('2d'), cl = cLeft.getContext('2d');
       const tw = cTop.width / dpr, th = cTop.height / dpr, lw = cLeft.width / dpr, lh = cLeft.height / dpr;
-      const sx = scrollX + RL, sy = scrollY;
       ct.setTransform(dpr, 0, 0, dpr, 0, 0); ct.clearRect(0, 0, tw, th);
       cl.setTransform(dpr, 0, 0, dpr, 0, 0); cl.clearRect(0, 0, lw, lh);
       ct.font = '500 9px "Hanken Grotesk", system-ui, sans-serif'; cl.font = ct.font;
@@ -548,7 +591,8 @@
       else if (t.type === 'al') { a.tx = t.r.x + t.r.w * 0.5; a.ty = t.r.y; }
       else { a.tx = 6; a.ty = t.r.y; }
       t.row = rowFor(t); if (t.row) { t.row.classList.add('act'); selectRow(t.row); }
-      ppFor(t);
+      ppFor(t); stripFor(t);
+      if (t.type === 'img') { const im = t.node.querySelector('img'); if (im && im.decode) im.decode().catch(() => {}); } // decode before it drops in
     };
     const workStep = (a, dt, ms) => {
       const t = a.task, r = t.r;
@@ -682,7 +726,8 @@
       $$('.sel, .redl, .gaps', plane).forEach((s) => s.remove());
       body.classList.remove('building');
       store.set('v3built', '1');
-      [rTop, rLeft, LP, PP].forEach((n) => n && n.classList.add('hide'));
+      document.dispatchEvent(new Event('v3:built'));
+      [rTop, rLeft, LP, PP, strip].forEach((n) => n && n.classList.add('hide'));
       if (you) you.remove();
       guides.forEach((g) => g.classList.add('fade'));
       const secs = (performance.now() - startWall) / 1000;
@@ -741,7 +786,7 @@
       cancelAnimationFrame(raf); unhold(); timers.forEach(clearTimeout);
       removeEventListener('wheel', userScroll); removeEventListener('touchmove', userScroll); removeEventListener('keydown', onKey); removeEventListener('resize', onResize);
       removeEventListener('pointermove', onPtr); document.removeEventListener('pointerleave', onLeave);
-      [sw, bar, rTop, rLeft, LP, PP, faceEl, scan, pen, you, flabel].forEach((n) => n && n.remove());
+      [sw, bar, rTop, rLeft, LP, PP, strip, faceEl, scan, pen, you, flabel].forEach((n) => n && n.remove());
       page.getAnimations().forEach((x) => x.cancel());
       page.style.transform = ''; page.style.transformOrigin = ''; root.classList.remove('cv');
       if (!finished) { tasks.forEach((t) => finishNode(t)); face.classList.add('lb-done'); body.classList.remove('building'); }
@@ -799,6 +844,7 @@
       }
       if (pr) h += `<dt>Spacing</dt><dd>${[d.t, d.rr, d.b, d.l].map((v) => Math.max(0, Math.round(v))).join(' · ')}</dd>`;
       E.card.innerHTML = h + '</dl>';
+      if (touch) { E.card.style.transform = ''; return; } // phones: the card sits at the bottom of the screen
       const cw = E.card.offsetWidth, ch = E.card.offsetHeight;
       let x = mx + 18, y = my + 20;
       if (x + cw > innerWidth - 12) x = mx - cw - 14;
@@ -807,15 +853,19 @@
     }
     const sched = () => { if (!raf) raf = requestAnimationFrame(draw); };
     const onMove = (e) => { mx = e.clientX; my = e.clientY; target = pick(e.target); sched(); };
-    const onClick = (e) => { if (e.target.closest('.dock')) return; e.preventDefault(); e.stopPropagation(); };
+    // phones have no hover: a tap inspects (and links are paused while Inspect is on)
+    const onClick = (e) => { if (e.target.closest('.dock, .icard')) return; e.preventDefault(); e.stopPropagation(); if (touch) { target = pick(e.target); sched(); } };
     const onKey = (e) => { if (e.key === 'Escape') toggle(false); };
+    let touch = false;
     function toggle(v) {
       const next = v === undefined ? !on : !!v;
       if (next === on) return; on = next;
+      touch = !fine;
       if (inspBtn) inspBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
       body.classList.toggle('inspecting', on);
+      dock.classList.toggle('insp-on', on);
       if (on) {
-        ov = el('div', 'insp none', '<div class="ip"></div><div class="ib"><em></em></div><div class="il v ln-t"><em></em></div><div class="il v ln-b"><em></em></div><div class="il h ln-l"><em></em></div><div class="il h ln-r"><em></em></div><div class="icard"></div>');
+        ov = el('div', 'insp none' + (!fine ? ' touch' : ''),'<div class="ip"></div><div class="ib"><em></em></div><div class="il v ln-t"><em></em></div><div class="il v ln-b"><em></em></div><div class="il h ln-l"><em></em></div><div class="il h ln-r"><em></em></div><div class="icard"></div>');
         ov.setAttribute('aria-hidden', 'true');
         body.appendChild(ov);
         E = { box: $('.ib', ov), size: $('.ib em', ov), pbox: $('.ip', ov), lt: $(".ln-t", ov), lb: $(".ln-b", ov), ll: $(".ln-l", ov), lr: $(".ln-r", ov), card: $('.icard', ov) };

@@ -16,7 +16,7 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const store = { get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} } };
   const PW = 248, FRAME = 1100;
-  const canEdit = () => innerWidth >= 1180 && matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const canEdit = () => innerWidth >= 1180 && matchMedia('(hover: hover) and (pointer: fine)').matches; // desktop canvas; smaller screens get the bottom sheet
 
   /* ================================================================ the design system */
   const FONTS = [
@@ -118,7 +118,7 @@
   if (dock) { dock.insertBefore(editBtn, dock.firstChild); dock.insertBefore(resetBtn, dock.firstChild); }
   editBtn.addEventListener('click', () => enter());
   resetBtn.addEventListener('click', () => { commit(() => { state = { k: { ...DEF }, e: {} }; }); if (location.hash.startsWith('#remix=')) history.replaceState(null, '', location.pathname + location.search); });
-  function dockState() { editBtn.hidden = !canEdit(); resetBtn.hidden = isDefault(); }
+  function dockState() { editBtn.hidden = false; resetBtn.hidden = isDefault(); }
   addEventListener('resize', dockState);
 
   /* ================================================================ load a shared or saved version */
@@ -135,7 +135,8 @@
   const clampCam = () => { const H = pageH() * cam.s; cam.y = clamp(cam.y, Math.min(70, innerHeight - 90 - H), 70); };
 
   function enter() {
-    if (on || !canEdit() || body.classList.contains('building')) return;
+    if (on || body.classList.contains('building')) return;
+    if (!canEdit()) return enterM();
     on = true;
     const ib = $('.dk-insp'); if (ib && ib.getAttribute('aria-pressed') === 'true') ib.click();
     lastY = scrollY;
@@ -322,32 +323,116 @@
 
   function seg(key, items, cur) { return `<div class="seg" data-k="${key}">${items.map((x) => `<button type="button" data-v="${x.id}" aria-pressed="${x.id === cur}">${x.name}</button>`).join('')}</div>`; }
   function ui(zoomOnly) {
+    if (on === 'm') return uiM();
     if (!on || !PP) return;
     const z = Math.round(cam.s * 100) + '%';
     $('.fm-z', PP).textContent = z; $('.fm-z2', bar).textContent = z;
     if (zoomOnly) return;
+    $('.pp', PP).innerHTML = designHTML() + selHTML();
+    // layers list state
+    $$('.lr[data-i]', LP).forEach((r) => { const i = +r.dataset.i; $('span', r).textContent = nameOf(list[i])[1]; r.classList.toggle('is-sel', i === sel); r.classList.toggle('off', !!(state.e[i] && state.e[i].h)); const eb = $('.eye', r); if (eb) eb.innerHTML = state.e[i] && state.e[i].h ? ICON.eyeOff : ICON.eye; });
+    $('[data-a="undo"]', bar).disabled = !hist.length;
+  }
+  function designHTML() {
     const k = state.k;
-    let h = `<div class="pp-sec"><h6>Design system</h6>
+    return `<div class="pp-sec"><h6>Design system</h6>
       <p class="pp-l">Font</p><div class="fonts" data-k="f">${FONTS.map((f) => { loadFont(f); return `<button type="button" data-v="${f.id}" aria-pressed="${f.id === k.f}" style="font-family:${f.css.replace(/"/g, "'")}"><b>Aa</b><span>${f.name}</span></button>`; }).join('')}</div>
       <p class="pp-l">Accent</p><div class="swatches" data-k="a">${ACCENTS.map((a) => `<button type="button" data-v="${a.id}" aria-pressed="${a.id === k.a}" aria-label="${a.name}" title="${a.name}" style="--c:${a.l}"></button>`).join('')}</div>
       <p class="pp-l">Corners</p>${seg('r', RADII, k.r)}
       <p class="pp-l">Spacing</p>${seg('d', DENS, k.d)}
       <p class="pp-l">Theme</p>${seg('t', THEMES, k.t)}
     </div>`;
+  }
+  function selHTML() {
+    let h = '';
+    const phone = on === 'm';
     if (sel >= 0 && list[sel]) {
       const n = list[sel], [ic, nm] = nameOf(n), ed = state.e[sel] || {}, cs = getComputedStyle(n), leaf = isLeaf(n);
       const fs = Math.round(parseFloat(cs.fontSize)), fw = +cs.fontWeight;
       h += `<div class="pp-sec"><div class="pp-ttl"><i class="ic">${ICON[ic]}</i>${esc(nm)}</div>
         <div class="pp-grid"><span><em>W</em><b class="fm-w">0</b></span><span><em>H</em><b class="fm-hh">0</b></span></div></div>`;
-      if (leaf) h += `<div class="pp-sec"><h6>Text</h6><textarea rows="3" maxlength="300" aria-label="Text">${esc(n.textContent.replace(/\s+/g, ' ').trim())}</textarea><p class="pp-note">Or double-click it on the canvas.</p></div>`;
+      if (leaf) h += `<div class="pp-sec"><h6>Text</h6><textarea rows="3" maxlength="300" aria-label="Text">${esc(n.textContent.replace(/\s+/g, ' ').trim())}</textarea>${phone ? '' : '<p class="pp-note">Or double-click it on the canvas.</p>'}</div>`;
       if (leaf || n.matches('[data-l="t"]')) h += `<div class="pp-sec"><h6>Type</h6><div class="step" data-k="s"><button type="button" data-v="-1" aria-label="Smaller">−</button><b>${fs}</b><button type="button" data-v="1" aria-label="Bigger">+</button><em>px</em></div>
         <div class="seg" data-k="w">${WEIGHTS.map(([w, l]) => `<button type="button" data-v="${w}" aria-pressed="${w === fw}">${l}</button>`).join('')}</div></div>`;
       h += `<div class="pp-sec pp-acts"><button type="button" data-act="hide">${ed.h ? 'Show layer' : 'Hide layer'}</button><button type="button" data-act="clear"${Object.keys(ed).length ? '' : ' disabled'}>Reset layer</button><button type="button" data-act="deselect">Done</button></div>`;
-    } else h += `<div class="pp-sec"><h6>Selection</h6><p class="pp-note">Click anything on the page to select it. Double-click text to rewrite it. Delete hides a layer, Ctrl+Z undoes.</p></div>`;
-    $('.pp', PP).innerHTML = h;
-    // layers list state
-    $$('.lr[data-i]', LP).forEach((r) => { const i = +r.dataset.i; $('span', r).textContent = nameOf(list[i])[1]; r.classList.toggle('is-sel', i === sel); r.classList.toggle('off', !!(state.e[i] && state.e[i].h)); const eb = $('.eye', r); if (eb) eb.innerHTML = state.e[i] && state.e[i].h ? ICON.eyeOff : ICON.eye; });
-    $('[data-a="undo"]', bar).disabled = !hist.length;
+    } else h += `<div class="pp-sec"><h6>Selection</h6><p class="pp-note">${phone ? 'Tap anything on the page to select it, then change it here.' : 'Click anything on the page to select it. Double-click text to rewrite it. Delete hides a layer, Ctrl+Z undoes.'}</p></div>`;
+    return h;
+  }
+
+  /* ================================================================ phones: a bottom sheet */
+  let SH = null, tab = 'design';
+  function enterM() {
+    on = 'm';
+    const ib = $('.dk-insp'); if (ib && ib.getAttribute('aria-pressed') === 'true') ib.click();
+    body.classList.add('fm-on', 'fm-m');
+    list = nodes(); index = new Map(list.map((n, i) => [n, i]));
+    SH = el('div', 'fsheet', `<div class="fs-hd"><button type="button" class="fs-grab" aria-label="Expand or collapse the panel"><i></i></button>
+        <div class="fs-top"><b>Figma mode</b><span>Your copy</span>
+          <button type="button" data-a="undo">Undo</button><button type="button" data-a="share" aria-label="Copy a link to your version">Share</button><button type="button" class="go" data-a="present"><svg width="10" height="10" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10 6z" fill="currentColor"/></svg>Present</button></div>
+        <div class="fs-tabs" role="tablist"><button type="button" role="tab" data-t="design">Design</button><button type="button" role="tab" data-t="layers">Layers</button><button type="button" role="tab" data-t="sel">Selected</button></div></div>
+      <div class="fs-body pp"></div>`);
+    SH.setAttribute('role', 'dialog'); SH.setAttribute('aria-label', 'Figma mode');
+    ov = el('div', 'fm-ov', '<div class="fm-h"></div><div class="fm-s"><i></i><i></i><i></i><i></i><em></em></div>');
+    ov.setAttribute('aria-hidden', 'true');
+    body.append(ov, SH);
+    requestAnimationFrame(() => requestAnimationFrame(() => SH.classList.add('in')));
+    SH.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.classList.contains('fs-grab')) return SH.classList.toggle('min');
+      if (b.dataset.t) { tab = b.dataset.t; SH.classList.remove('min'); return uiM(); }
+      const a = b.dataset.a;
+      if (a === 'undo') return undo();
+      if (a === 'share') return share();
+      if (a === 'present') return exitM();
+      if (a === 'reset') return commit(() => { state = { k: { ...DEF }, e: {} }; });
+      const r = e.target.closest('.lr[data-i]');
+      if (r) { const i = +r.dataset.i; if (e.target.closest('.eye')) return toggleHide(i); select(i); tab = 'sel'; uiM(); revealM(list[i]); return; }
+      onPP(e);
+    });
+    SH.addEventListener('input', onPPInput);
+    SH.addEventListener('focusin', (e) => { if (e.target.matches('textarea')) snapshot(); });
+    page.addEventListener('click', onTapM, true);
+    loopM();
+    uiM();
+    toast('Figma mode: tap anything to select it, change it in the panel, then Present. Jaiye’s real site stays as it is.', 4000);
+  }
+  function exitM() {
+    if (on !== 'm') return;
+    on = false; cancelAnimationFrame(raf);
+    page.removeEventListener('click', onTapM, true);
+    SH.classList.remove('in'); const s = SH, o = ov; setTimeout(() => { s.remove(); o.remove(); }, 320);
+    body.classList.remove('fm-on', 'fm-m'); sel = -1; hov = null;
+    document.dispatchEvent(new Event('v3:layout'));
+  }
+  function onTapM(e) {
+    e.preventDefault(); e.stopPropagation();
+    const n = pick(e.target); sel = n ? index.get(n) : -1;
+    if (sel >= 0) { tab = 'sel'; SH.classList.remove('min'); }
+    uiM();
+  }
+  const revealM = (n) => { const r = n.getBoundingClientRect(), sh = SH.getBoundingClientRect().top; if (r.top < 60 || r.bottom > sh - 20) scrollTo({ top: scrollY + r.top - 90, behavior: 'smooth' }); };
+  function uiM() {
+    if (on !== 'm' || !SH) return;
+    $$('.fs-tabs button', SH).forEach((b) => b.setAttribute('aria-selected', b.dataset.t === tab));
+    $('[data-a="undo"]', SH).disabled = !hist.length;
+    const B = $('.fs-body', SH);
+    if (tab === 'design') B.innerHTML = designHTML() + `<div class="pp-sec pp-acts"><button type="button" data-a="reset"${isDefault() ? ' disabled' : ''}>Reset to Jaiye’s design</button></div>`;
+    else if (tab === 'layers') {
+      let h = '';
+      list.forEach((n, i) => { if (n.matches('.hd, .hero, section, .ft')) { const [ic, nm] = nameOf(n); h += row(i, 0, ic, nm); list.forEach((c, j) => { if (c !== n && n.contains(c) && c.hasAttribute('data-l')) { const [ic2, nm2] = nameOf(c); h += row(j, 1, ic2, nm2); } }); } });
+      B.innerHTML = `<div class="fp-list">${h}</div>`;
+      $$('.lr[data-i]', B).forEach((r) => { const i = +r.dataset.i; r.classList.toggle('is-sel', i === sel); r.classList.toggle('off', !!(state.e[i] && state.e[i].h)); if (state.e[i] && state.e[i].h) $('.eye', r).innerHTML = ICON.eyeOff; });
+    } else B.innerHTML = selHTML();
+  }
+  // the selection box follows the page; cheap: one rect per frame, only while something is selected
+  function loopM() {
+    raf = requestAnimationFrame(loopM);
+    const Sb = $('.fm-s', ov), n = sel >= 0 ? list[sel] : null;
+    if (!n || !n.isConnected || n.style.display === 'none') { if (Sb.style.display !== 'none') Sb.style.display = 'none'; return; }
+    const r = n.getBoundingClientRect();
+    Sb.style.cssText = `display:block;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
+    const t = `${Math.round(r.width)} × ${Math.round(r.height)}`;
+    if (Sb.lastChild.textContent !== t) { Sb.lastChild.textContent = t; const W = $('.fm-w', SH), H = $('.fm-hh', SH); if (W) { W.textContent = Math.round(r.width); H.textContent = Math.round(r.height); } }
   }
   function onPP(e) {
     const b = e.target.closest('button'); if (!b) return;
