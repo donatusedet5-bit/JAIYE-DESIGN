@@ -512,3 +512,104 @@ body.home .mv > b { margin-top: 10px; }
   body.home .mgrid, body.home .mgrid.n2 { grid-template-columns: repeat(2, 1fr); gap: 16px 12px; }
   body.home .mgrid > :last-child:nth-child(odd) { grid-column: span 2; }
 }
+
+/* =====================================================================
+   DESIGN TOKENS (home): radius follows --r, colours follow the variables,
+   so Figma edit mode can restyle the whole page from one place
+   ===================================================================== */
+body.home .btn { border-radius: calc(var(--r) + 1px); color: var(--white); }
+body.home .mv .pic { border-radius: calc(var(--r) * .8); }
+body.home .fb { border-radius: calc(var(--r) * .6); background: var(--white); }
+body.home .why .canvas { border-radius: calc(var(--r) + 4px); }
+body.home .cta { border-radius: calc(var(--r) + 6px); background: var(--ink); color: var(--white); }
+body.home .cta-k { color: inherit; opacity: .7; }
+body.home .cta-p { color: inherit; opacity: .8; }
+body.home .btn.light { background: var(--white); color: var(--ink); }
+body.home .btn.light:hover { color: var(--navy); }
+body.home .ln.light { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); }
+body.home .arrows button { border-radius: calc(var(--r) * .8); }
+body.home .fsel i { background: var(--white); }
+body.home .fcur { color: var(--navy); }
+body.home .fcur b { color: var(--white); }
+body.home .page { background: var(--white); }
+.bio a, .ln { text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); }
+.reach a { color: var(--ink); font-weight: 600; text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; transition: text-decoration-color .2s; }
+.reach a:hover { text-decoration-color: currentColor; }
+.hero .reach { margin-top: 18px; font-size: 14.5px; line-height: 1.6; color: var(--body); max-width: 600px; }
+.dock button { color: var(--white); }
+.dock button[hidden] { display: none; }
+.dock .dk-reset { background: var(--white); color: var(--ink); box-shadow: 0 0 0 1.5px var(--ink), 0 6px 24px rgba(22,23,26,.14); }
+.dock .dk-reset:hover { background: var(--white); color: var(--navy); }
+body.fm-on .dock { display: none; }
+
+/* dark theme (visitor's choice in edit mode) */
+body.home.t-dark { --white: #0F1013; --ink: #F1F1EE; --body: #BFC1C7; --muted: #8D9098; --line: #26282D; --panel: #1B1D22; }
+body.home.t-dark .why .canvas { background-color: #15171B; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='1.5' cy='1.5' r='1' fill='%232C2F35'/%3E%3C/svg%3E"); box-shadow: inset 0 0 0 1px #22252A; }
+body.home.t-dark .fb { box-shadow: 0 0 0 1px #2A2D33; }
+body.home.t-dark .card .pic, body.home.t-dark .mv .pic { box-shadow: 0 0 0 1px rgba(255,255,255,.06); }
+body.home.t-dark .tools img { filter: brightness(1.15); }
+body.home.t-dark .fl { color: var(--muted); }
+
+/* =====================================================================
+   FIGMA EDIT MODE
+   ===================================================================== */
+html.fm .page { cursor: default; box-shadow: 0 0 0 1px rgba(22,23,26,.08), 0 24px 70px rgba(22,23,26,.14); }
+html.fm .page * { cursor: default; }
+.fp.live { pointer-events: auto; z-index: 56; }
+.fp.live .fp-list, .fp.live .pp { overflow: auto; overscroll-behavior: contain; }
+.fp.live .pp { flex: 1; padding-bottom: 80px; }
+.fp.live .lr { cursor: pointer; animation: none; }
+.fp.live .lr:hover { background: #F5F5F5; }
+.fp.live .lr.is-sel { background: #E5F4FF; }
+.lr .eye { margin-left: auto; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 5px; color: #8A8A8A; opacity: 0; }
+.lr .eye svg { width: 14px; height: 14px; }
+.lr:hover .eye, .lr.off .eye { opacity: 1; }
+.lr .eye:hover { background: #EAEAEA; color: #1E1E1E; }
+.lr.off > span, .lr.off > .ic { opacity: .4; }
+.pp-l { margin: 12px 0 6px; font-size: 11px; color: #8A8A8A; }
+.pp-l:first-of-type { margin-top: 2px; }
+.pp .fonts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pp .fonts button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 9px; border-radius: 6px; background: #F5F5F5; text-align: left; }
+.pp .fonts b { font-size: 20px; font-weight: 600; line-height: 1; }
+.pp .fonts span { font-size: 10.5px; color: #5A5A5A; font-family: "Hanken Grotesk", system-ui, sans-serif; }
+.pp .swatches { display: flex; gap: 8px; }
+.pp .swatches button { width: 26px; height: 26px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+.pp .swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #0D99FF; }
+.pp .seg { display: flex; padding: 2px; border-radius: 6px; background: #F0F0F0; }
+.pp .seg button { flex: 1; height: 26px; border-radius: 5px; font-size: 11px; color: #5A5A5A; white-space: nowrap; }
+.pp .seg button[aria-pressed="true"] { background: #fff; color: #1E1E1E; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.pp .fonts button[aria-pressed="true"] { background: #E5F4FF; box-shadow: inset 0 0 0 1.5px #0D99FF; }
+.pp button:focus-visible { outline: 2px solid #0D99FF; outline-offset: 1px; }
+.pp textarea { width: 100%; resize: vertical; min-height: 64px; padding: 8px 9px; border: 0; border-radius: 6px; background: #F5F5F5; font: 400 12px/1.45 "Hanken Grotesk", system-ui, sans-serif; color: #1E1E1E; }
+.pp textarea:focus { outline: 1.5px solid #0D99FF; background: #fff; }
+.pp .step { display: flex; align-items: center; gap: 6px; height: 28px; margin-bottom: 8px; }
+.pp .step button { width: 28px; height: 28px; border-radius: 6px; background: #F0F0F0; font-size: 15px; }
+.pp .step b { min-width: 32px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pp .step em { font-style: normal; color: #8A8A8A; }
+.pp-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.pp-acts button { height: 28px; padding: 0 10px; border-radius: 6px; background: #F0F0F0; font-size: 11.5px; font-weight: 500; }
+.pp-acts button:hover { background: #E6E6E6; }
+.pp-acts button:disabled { opacity: .4; }
+.pp-acts button[data-act="deselect"] { margin-left: auto; background: #1E1E1E; color: #fff; }
+.fm-ov { position: fixed; inset: 0; z-index: 53; pointer-events: none; }
+.fm-ov.hide { display: none; }
+.fm-h { position: fixed; display: none; box-shadow: inset 0 0 0 1px #0D99FF; }
+.fm-s { position: fixed; display: none; box-shadow: inset 0 0 0 1.5px #0D99FF; }
+.fm-s i { position: absolute; width: 7px; height: 7px; background: #fff; border: 1.5px solid #0D99FF; }
+.fm-s i:nth-child(1) { left: -3px; top: -3px; } .fm-s i:nth-child(2) { right: -3px; top: -3px; }
+.fm-s i:nth-child(3) { left: -3px; bottom: -3px; } .fm-s i:nth-child(4) { right: -3px; bottom: -3px; }
+.fm-s em { position: absolute; left: 50%; top: calc(100% + 6px); transform: translateX(-50%); padding: 3px 5px; border-radius: 3px; background: #0D99FF; color: #fff; font: 600 10px/1 "Hanken Grotesk", system-ui, sans-serif; font-style: normal; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fm-editing { outline: 2px solid #0D99FF !important; outline-offset: 2px; cursor: text !important; caret-color: #0D99FF; }
+.fm-bar { gap: 2px; padding-left: 12px; }
+.fm-bar button:disabled { opacity: .35; pointer-events: none; }
+.fm-bar .fm-z2 { min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; }
+.flabel.hide { opacity: 0; }
+.fm-toast { position: fixed; left: 50%; top: 16px; z-index: 70; max-width: min(560px, calc(100vw - 32px)); transform: translate(-50%, -12px); padding: 10px 14px; border-radius: 10px; background: #16171A; color: #fff; font: 500 13px/1.45 "Hanken Grotesk", system-ui, sans-serif; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; }
+.fm-toast.on { opacity: 1; transform: translate(-50%, 0); }
+/* the editor and build UI never take the visitor's font or theme */
+.fp, .bar, .flabel, .fm-toast, .ruler, .you, .icard, .cvv, .dock, .fm-s em, .sel em, .redl em, .gap em, .cur .tg { font-family: "Hanken Grotesk", system-ui, sans-serif; }
+.bar { background: #16171A; color: #fff; }
+.bar .go { background: #fff; color: #16171A; }
+.bar .go:hover { color: #1B2B5E; }
+.flabel { color: #5F6066; }
+.flabel b { color: #16171A; }

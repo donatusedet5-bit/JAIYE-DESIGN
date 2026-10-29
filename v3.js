@@ -121,11 +121,16 @@
   if (hero) {
     const place = () => {
       const w = $('.w', hero), s = $('.fsel', hero), c = $('.fcur', hero);
-      if (!w || !s) return;
-      const hr = hero.getBoundingClientRect(), r = w.getBoundingClientRect();
+      if (!s) return;
+      // no "scale" in the headline (a visitor rewrote it in edit mode): no selection
+      s.style.visibility = c.style.visibility = w ? '' : 'hidden';
+      if (!w) return;
+      const hr = hero.getBoundingClientRect(), k = hr.width / (hero.offsetWidth || hr.width) || 1; // page may be scaled in edit mode
+      const r0 = w.getBoundingClientRect(), r = { left: r0.left / k, top: r0.top / k, width: r0.width / k, height: r0.height / k };
+      const hl = hr.left / k, htop = hr.top / k;
       const fs = parseFloat(getComputedStyle(w).fontSize) || 48;
-      const padX = fs * 0.08, ht = fs * 0.86, x = r.left - hr.left - padX, wd = r.width + padX * 2;
-      const y = r.top - hr.top + (r.height - ht) / 2 + fs * 0.03;
+      const padX = fs * 0.08, ht = fs * 0.86, x = r.left - hl - padX, wd = r.width + padX * 2;
+      const y = r.top - htop + (r.height - ht) / 2 + fs * 0.03;
       s.style.cssText = `left:${x}px;top:${y}px;width:${wd}px;height:${ht}px`;
       const em = $('em', s);
       if (em && !em.querySelector('.ch')) em.textContent = `${Math.round(wd)} × ${Math.round(ht)}`;
@@ -135,6 +140,8 @@
     if (document.fonts) document.fonts.ready.then(place);
     addEventListener('load', place);
     addEventListener('resize', place);
+    document.addEventListener('v3:layout', () => requestAnimationFrame(place));
+    if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', place);
   }
 
   /* ---------- Lagos local time ---------- */
