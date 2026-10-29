@@ -106,7 +106,7 @@
     const play = (slide) => {
       clearInterval(timer); stage = 0;
       const imgs = $$('.stage img', slide); imgs.forEach((im, i) => im.classList.toggle('on', i === 0)); chip.textContent = names[0];
-      timer = setInterval(() => { stage = (stage + 1) % 3; imgs.forEach((im, i) => im.classList.toggle('on', i === stage)); chip.textContent = names[stage]; }, 650);
+      timer = setInterval(() => { stage = (stage + 1) % imgs.length; imgs.forEach((im, i) => im.classList.toggle('on', i === stage)); chip.textContent = names[stage]; }, 650);
     };
     rowsEl.forEach((r, i) => {
       r.addEventListener('pointerenter', () => {
