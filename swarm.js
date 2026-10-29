@@ -189,9 +189,9 @@
     /* ---------- tasks ---------- */
     const face = $('[data-face]', main);
     const layers = $$('[data-l]').filter((n) => !n.closest('[hidden]') && n !== face);
-    const blocks = [$('.hd', main), $('.bio', main), ...$$('section', main).filter((s) => !s.hidden), $('.ft')].filter(Boolean);
+    const blocks = [$('.hd', main), $('.hero', main), ...$$('section', main).filter((s) => !s.hidden), $('.ft')].filter(Boolean);
     const blockOf = (n) => blocks.find((b) => b.contains(n));
-    const GAPBOX = ['.bio', '.rail', '.mgrid', '.tools'];
+    const GAPBOX = ['.frames', '.rail', '.mgrid', '.tools'];
     const tasks = [];
     tasks.push({ type: 'gv', side: 0 }, { type: 'gv', side: 1 });
     let lastBlock = null;
@@ -248,10 +248,12 @@
       return r;
     };
     const selectRow = (r) => { if (!r) return; if (selRow) selRow.classList.remove('is-sel'); selRow = r; r.classList.add('is-sel'); };
-    const blockName = (b) => b.classList.contains('hd') ? 'Header' : b.classList.contains('bio') ? 'Bio' : b.tagName === 'FOOTER' ? 'Footer' : (($('h2', b) || {}).textContent || 'Section').trim();
+    const blockName = (b) => b.classList.contains('hd') ? 'Header' : b.classList.contains('hero') ? 'Hero' : b.tagName === 'FOOTER' ? 'Footer' : (($('h2', b) || {}).textContent || 'Section').trim();
     const nameOf = (n) => {
       if (n.dataset.l === 'i') return n.closest('.mv') ? ['video', 'Video · ' + (($('b', n.closest('.mv')) || {}).textContent || '')] : n.closest('.card') ? ['img', 'Cover'] : ['img', 'Image'];
       if (n.classList.contains('arrows')) return ['auto', 'Arrows'];
+      if (n.classList.contains('fsel')) return ['frame', 'Selection'];
+      if (n.classList.contains('fcur')) return ['frame', 'Cursor · Jaiye'];
       let s = n.textContent.replace(/\s+/g, ' ').trim(); if (s.length > 24) s = s.slice(0, 23) + '…';
       return ['text', s || 'Text'];
     };
@@ -403,7 +405,7 @@
     };
 
     /* ---------- timings (ms at 1x) ---------- */
-    const T = { draw: 480, drawImg: 700, drop: 620, select: 380, guideV: 1500, guideH: 900, typeMin: 380, typeMax: 2300, perChar: 26, sp: 520, spHold: 1500, al: 700, alHold: 1500 };
+    const T = { draw: 480, drawImg: 700, drop: 620, select: 380, guideV: 1500, guideH: 900, typeMin: 360, typeMax: 1800, perChar: 22, sp: 520, spHold: 1500, al: 700, alHold: 1500 };
 
     /* ================================================== 1. a pen tool draws Jaiye's mark */
     let phase = 'pen', pt = 0;

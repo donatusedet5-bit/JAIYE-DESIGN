@@ -115,6 +115,27 @@
     w.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(i + 1); if (e.key === 'ArrowLeft') go(i - 1); });
   });
 
+  /* ---------- hero: keep the navy Figma selection on the word "scale" ---------- */
+  const hero = $('.hero');
+  if (hero) {
+    const place = () => {
+      const w = $('.w', hero), s = $('.fsel', hero), c = $('.fcur', hero);
+      if (!w || !s) return;
+      const hr = hero.getBoundingClientRect(), r = w.getBoundingClientRect();
+      const fs = parseFloat(getComputedStyle(w).fontSize) || 48;
+      const padX = fs * 0.08, ht = fs * 0.86, x = r.left - hr.left - padX, wd = r.width + padX * 2;
+      const y = r.top - hr.top + (r.height - ht) / 2 + fs * 0.03;
+      s.style.cssText = `left:${x}px;top:${y}px;width:${wd}px;height:${ht}px`;
+      const em = $('em', s);
+      if (em && !em.querySelector('.ch')) em.textContent = `${Math.round(wd)} × ${Math.round(ht)}`;
+      if (c) { c.style.left = (x + wd - 4) + 'px'; c.style.top = (y + ht - 6) + 'px'; }
+    };
+    place();
+    if (document.fonts) document.fonts.ready.then(place);
+    addEventListener('load', place);
+    addEventListener('resize', place);
+  }
+
   /* ---------- Lagos local time ---------- */
   const clocks = $$('[data-clock]');
   if (clocks.length) {

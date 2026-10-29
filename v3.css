@@ -38,7 +38,7 @@ section { margin-top: var(--gap); }
 .hd { display: flex; align-items: center; gap: 14px; }
 .av { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; flex: none; background: var(--panel); }
 .who { min-width: 0; flex: 1; }
-.who > h1 { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.35; }
+.who > p.nm { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.35; color: var(--ink); }
 .who > p { margin: 0; font-size: 13.5px; color: var(--muted); line-height: 1.45; }
 .nav { display: flex; gap: 20px; font-size: 13.5px; font-weight: 500; }
 @media (min-width: 901px) { .hd:not(.small) .nav { position: absolute; top: 30px; right: 36px; } }
@@ -417,3 +417,61 @@ html.cvv-open { overflow: hidden; }
 .cvv-bar .cvv-zoom { min-width: 48px; text-align: center; font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .cvv-bar .sep { width: 1px; height: 18px; background: rgba(255,255,255,.14); margin: 0 4px; }
 @media (max-width: 640px) { .cvrow { flex-direction: column; align-items: flex-start; } .cvv-top p { display: none; } }
+
+/* =====================================================================
+   HERO (finished page): a Figma moment that stays — the word "scale"
+   is selected in navy, with Jaiye's cursor resting on it
+   ===================================================================== */
+.nav .nq { color: var(--navy); font-weight: 600; }
+.hero { position: relative; margin-top: 64px; }
+.avail { display: inline-flex; align-items: center; gap: 9px; margin: 0 0 22px; font-size: 13px; font-weight: 500; color: var(--ink); }
+.avail i { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--navy); }
+.avail i::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid var(--navy); opacity: 0; animation: ping 2.6s ease-out infinite; }
+@keyframes ping { 0% { transform: scale(.6); opacity: .5; } 80%, 100% { transform: scale(1.5); opacity: 0; } }
+.hero h1 { margin: 0; font-size: clamp(36px, 6.4vw, 50px); line-height: 1.05; font-weight: 600; letter-spacing: -.035em; color: var(--ink); text-wrap: balance; }
+.hero h1 .w { white-space: nowrap; }
+.fsel { position: absolute; left: 0; top: 0; width: 0; height: 0; border: 1.5px solid var(--navy); pointer-events: none; }
+.fsel i { position: absolute; width: 7px; height: 7px; background: #fff; border: 1.5px solid var(--navy); }
+.fsel i:nth-child(1) { left: -4px; top: -4px; } .fsel i:nth-child(2) { right: -4px; top: -4px; }
+.fsel i:nth-child(3) { left: -4px; bottom: -4px; } .fsel i:nth-child(4) { right: -4px; bottom: -4px; }
+.fsel em { position: absolute; left: 50%; top: calc(100% + 8px); transform: translateX(-50%); padding: 3px 6px; border-radius: 4px; background: var(--navy); color: #fff; font: 600 10.5px/1 var(--font); font-style: normal; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fcur { position: absolute; left: 0; top: 0; display: block; pointer-events: none; animation: drift 7s ease-in-out infinite; }
+.fcur svg { display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.2)); }
+.fcur b { position: absolute; left: 12px; top: 14px; padding: 3px 7px 4px; border-radius: 4px 10px 10px 10px; background: var(--navy); color: #fff; font: 600 11px/1.15 var(--font); white-space: nowrap; }
+@keyframes drift { 0%, 100% { transform: translate(0, 0); } 30% { transform: translate(-6px, 4px); } 60% { transform: translate(5px, -3px); } }
+.hero .sub { margin: 26px 0 0; font-size: 17.5px; line-height: 1.55; color: var(--body); max-width: 33em; }
+.hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 28px; }
+.btn { display: inline-flex; align-items: center; gap: 9px; height: 48px; padding: 0 20px; border-radius: 11px; background: var(--ink); color: #fff; font-size: 15px; font-weight: 600; text-decoration: none; transition: background .2s, transform .2s; }
+.btn:hover { background: var(--navy); }
+.btn svg { transition: transform .2s; }
+.btn:hover svg { transform: translateX(3px); }
+.btn:active { transform: translateY(1px); }
+.hero-cta .ln { font-size: 15px; }
+.note { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+.proof { margin: 32px 0 0; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.6; color: var(--muted); }
+.proof b { color: var(--ink); font-weight: 600; }
+
+/* "Why founders work with me": three frames on a dotted Figma canvas */
+.why .canvas { position: relative; width: min(880px, calc(100vw - 32px)); margin-left: 50%; transform: translateX(-50%); padding: 30px 22px 24px; border-radius: 14px; background-color: #F6F5F2; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='1.5' cy='1.5' r='1' fill='%23D9D7D1'/%3E%3C/svg%3E"); box-shadow: inset 0 0 0 1px #ECEAE5; }
+.frames { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.fl { margin: 0 0 7px; font-size: 11.5px; font-weight: 500; color: var(--muted); transition: color .2s; }
+.fb { height: calc(100% - 26px); padding: 16px 16px 18px; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px #E4E3DF; transition: box-shadow .2s; }
+.fb h3 { margin: 0 0 8px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.fb p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--body); }
+.frame:hover .fb { box-shadow: 0 0 0 1.5px var(--navy); }
+.frame:hover .fl { color: var(--navy); }
+
+/* closing call to action */
+.cta { padding: 36px 32px 34px; border-radius: 16px; background: var(--ink); color: #fff; }
+.cta-k { margin: 0 0 12px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.7); }
+.cta h2 { margin: 0; font-size: clamp(26px, 4.4vw, 34px); line-height: 1.12; font-weight: 600; letter-spacing: -.025em; max-width: 18ch; }
+.cta-p { margin: 14px 0 0; font-size: 15.5px; line-height: 1.6; color: rgba(255,255,255,.78); max-width: 34em; }
+.btn.light { background: #fff; color: var(--ink); }
+.btn.light:hover { background: #fff; color: var(--navy); }
+.ln.light { color: #fff; text-decoration-color: rgba(255,255,255,.45); }
+.ln.light:hover { text-decoration-color: #fff; }
+.ft { margin-top: 56px; }
+
+@media (max-width: 900px) { .frames { grid-template-columns: 1fr; gap: 14px; } .why .canvas { width: calc(100vw - 24px); padding: 24px 16px 18px; } .fb { height: auto; } }
+@media (max-width: 640px) { .hero { margin-top: 44px; } .hero .sub { font-size: 16.5px; } .cta { padding: 28px 22px; margin-left: -6px; margin-right: -6px; } .btn { height: 46px; } }
+@media (prefers-reduced-motion: reduce) { .fcur, .avail i::after { animation: none; } }
