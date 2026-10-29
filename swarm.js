@@ -210,7 +210,7 @@
 
     const gapRects = (c) => {
       const cr = rectOf(c);
-      const kids = [...c.children].filter((k) => k.offsetParent !== null).map((k) => rectOf(k)).filter((r) => r.w > 0 && r.h > 0 && r.x < scrollX + vw && r.x + r.w > scrollX);
+      const kids = [...c.children].filter((k) => k.offsetParent !== null).map((k) => rectOf(k)).filter((r) => r.w > 0 && r.h > 0 && r.x < Math.min(scrollX + vw, cr.x + cr.w + 2) && r.x + r.w > Math.max(scrollX, cr.x - 2));
       const out = [];
       for (let i = 1; i < kids.length; i++) {
         const a = kids[i - 1], b = kids[i];
@@ -227,6 +227,8 @@
       else t.r = { x: t.side ? colR : colL, y: scrollY, w: 1, h: 1 };
       // things scrolled out of sight sideways (cards further along the rail) appear without an agent
       t.instant = !!t.node && (t.r.x > vw + scrollX - 8 || t.r.x + t.r.w < scrollX + 8 || t.r.w < 1 || t.r.h < 1);
+      const rl = t.node && t.node.closest('.rail'); // cards clipped by the rail appear without an agent
+      if (rl) { const rr = rectOf(rl); if (t.r.x + t.r.w > rr.x + rr.w + 2 || t.r.x < rr.x - 2) t.instant = true; }
     });
     measureTasks();
     tasks.forEach((t) => { t.state = 0; if (t.skip) t.instant = true; });

@@ -475,3 +475,40 @@ html.cvv-open { overflow: hidden; }
 @media (max-width: 900px) { .frames { grid-template-columns: 1fr; gap: 14px; } .why .canvas { width: calc(100vw - 24px); padding: 24px 16px 18px; } .fb { height: auto; } }
 @media (max-width: 640px) { .hero { margin-top: 44px; } .hero .sub { font-size: 16.5px; } .cta { padding: 28px 22px; margin-left: -6px; margin-right: -6px; } .btn { height: 46px; } }
 @media (prefers-reduced-motion: reduce) { .fcur, .avail i::after { animation: none; } }
+
+/* =====================================================================
+   STRICT GRID (home): one 880px column; every section starts and ends
+   on the same two edges; cards sit on a 3-column grid with 16px gutters
+   ===================================================================== */
+body.home { --col: 880px; --g: 16px; }
+@media (min-width: 901px) { body.home .hd .nav { position: static; margin-left: auto; align-self: center; padding: 0; } }
+body.home .hero h1 { font-size: clamp(38px, 6vw, 64px); }
+body.home .hero .sub { max-width: 600px; }
+/* why-me frames: content on the grid edges, the dotted canvas bleeds out around it */
+body.home .why .canvas { width: auto; margin-left: -22px; margin-right: -22px; transform: none; padding: 26px 22px 22px; }
+body.home .frames { gap: var(--g); }
+/* selected work: three across on the grid, more with the arrows or a swipe */
+body.home .rail-wrap { margin: 0; overflow: hidden; }
+body.home .rail { --edge: 0px; padding: 0 0 4px; scroll-padding: 0; gap: var(--g); }
+body.home .card { width: calc((100% - 2 * var(--g)) / 3); }
+.card .cap { display: block; margin-top: 12px; }
+.card .cap > b { display: block; margin: 0; font-size: 14.5px; font-weight: 600; line-height: 1.4; }
+.card .cap > span { display: block; font-size: 13px; color: var(--muted); line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* motion, grouped by project */
+.mgroup + .mgroup { margin-top: 40px; }
+.mg-h { display: flex; align-items: baseline; gap: 10px; padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--line); }
+.mg-h > b { font-size: 15px; font-weight: 600; }
+.mg-h > span { font-size: 13px; color: var(--muted); }
+.mg-h .ln { margin-left: auto; font-size: 13px; }
+body.home .mgrid { grid-template-columns: repeat(3, 1fr); gap: 20px var(--g); }
+body.home .mgrid.n2 { grid-template-columns: repeat(2, 1fr); }
+body.home .mv > b { margin-top: 10px; }
+@media (max-width: 900px) { body.home .card { width: calc((100% - var(--g)) / 2); } }
+@media (max-width: 640px) {
+  body.home .why .canvas { margin-left: -10px; margin-right: -10px; padding: 20px 10px 14px; }
+  body.home .rail-wrap { margin: 0 calc(-1 * var(--pad)); }
+  body.home .rail { padding: 0 var(--pad) 4px; scroll-padding: 0 var(--pad); }
+  body.home .card { width: 82%; }
+  body.home .mgrid, body.home .mgrid.n2 { grid-template-columns: repeat(2, 1fr); gap: 16px 12px; }
+  body.home .mgrid > :last-child:nth-child(odd) { grid-column: span 2; }
+}

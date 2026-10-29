@@ -55,7 +55,8 @@
         const v = $('video', en.target);
         if (en.isIntersecting) {
           if (!v.src) v.src = en.target.dataset.src;
-          if (!reduce) v.play().then(() => { const p = $('.pic img', en.target); if (p) p.classList.add('gone'); }).catch(() => {});
+          if (!v.dataset.w) { v.dataset.w = 1; v.addEventListener('timeupdate', () => { if (v.currentTime > 0.15) { const p = $('.pic img', en.target); if (p) p.classList.add('gone'); } }); }
+          if (!reduce) v.play().catch(() => {});
         } else if (v.src) v.pause();
       });
     }, { threshold: 0.5 });
