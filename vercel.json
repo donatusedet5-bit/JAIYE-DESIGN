@@ -1,1 +1,9 @@
-{"cleanUrls": true, "trailingSlash": false}
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/work", "destination": "/#work", "permanent": false },
+    { "source": "/motion", "destination": "/#motion", "permanent": false },
+    { "source": "/about", "destination": "/", "permanent": false }
+  ]
+}
