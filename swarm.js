@@ -182,7 +182,7 @@
     if (fine) { you = el('div', 'you', 'You'); you.setAttribute('aria-hidden', 'true'); body.appendChild(you); addEventListener('pointermove', onPtr, { passive: true }); document.addEventListener('pointerleave', onLeave); }
 
     /* ---------- geometry ---------- */
-    let vw = innerWidth, vh = innerHeight, colL = 0, colR = 0, docH = 0;
+    let vw = innerWidth, vh = innerHeight, colL = 0, colR = 0, docH = 0, hAge = 0;
     const rectOf = (n) => { const r = n.getBoundingClientRect(); return { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height }; };
     const measureCol = () => {
       const hd = $('.hd', main).getBoundingClientRect();
@@ -258,6 +258,9 @@
     const selectRow = (r) => { if (!r) return; if (selRow) selRow.classList.remove('is-sel'); selRow = r; r.classList.add('is-sel'); };
     const blockName = (b) => b.classList.contains('hd') ? 'Header' : b.classList.contains('hero') ? 'Hero' : b.tagName === 'FOOTER' ? 'Footer' : (($('h2', b) || {}).textContent || 'Section').trim();
     const nameOf = (n) => {
+      if (n.dataset.l === 'i' && n.closest('.dsw')) return ['frame', n.matches('.ds-assets') ? 'Assets' : n.matches('.ds-stage') ? 'Canvas' : 'Properties'];
+      if (n.dataset.l === 'i' && n.matches('.qa-list')) return ['frame', 'Questions'];
+      if (n.dataset.l === 'i' && n.closest('.pstep')) return ['frame', 'Step · ' + (($('h3', n) || {}).textContent || '')];
       if (n.dataset.l === 'i') return n.closest('.mv') ? ['video', 'Video · ' + (($('b', n.closest('.mv')) || {}).textContent || '')] : n.closest('.card') ? ['img', 'Cover'] : ['img', 'Image'];
       if (n.classList.contains('arrows')) return ['auto', 'Arrows'];
       if (n.classList.contains('fsel')) return ['frame', 'Selection'];
@@ -303,6 +306,7 @@
       if (t.type === 'sp') return renderPP('Spacing', { ...base, icon: 'space', w: 0, note: ['Gap', `${Math.round(r.h)} between sections`] });
       if (t.type === 'al') return renderPP('Auto layout gaps', { ...base, icon: 'auto', note: ['Gap', t.gaps.map((g) => g.v).filter((v, i, a) => a.indexOf(v) === i).join(' · ')] });
       const cs = getComputedStyle(t.node);
+      if (t.type === 'img' && !$('img, video', t.node)) { const bg = cs.backgroundColor; const solid = bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent'; return renderPP('Frame', { ...base, icon: 'frame', fill: solid ? { c: bg, label: hex(bg).slice(1) } : null, radius: px(cs.borderTopLeftRadius) }); }
       if (t.type === 'img') { const im = $('img', t.node) || t.node; return renderPP(t.node.closest('.mv') ? 'Video' : 'Image', { ...base, icon: t.node.closest('.mv') ? 'video' : 'img', fill: { img: im.currentSrc || im.src || '', label: 'Image' }, radius: px(cs.borderTopLeftRadius) }); }
       const fam = cs.fontFamily.split(',')[0].replace(/["']/g, '');
       const lh = cs.lineHeight === 'normal' ? 'Auto' : px(cs.lineHeight);
@@ -687,7 +691,9 @@
       }
       ppLive();
       if (tour) {
-        const max = document.documentElement.scrollHeight - vh;
+        // page height is cached: reading it every frame forced a full layout per frame
+        hAge += ms; if (hAge > 500) { hAge = 0; docH = document.documentElement.scrollHeight; }
+        const max = docH - vh;
         const target = clamp(ft - vh * 0.26, 0, max);
         const y = lerp(scrollY, target, 1 - Math.exp(-dt * 2.6));
         if (Math.abs(y - scrollY) > 0.5) scrollTo(0, y);

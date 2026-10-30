@@ -47,7 +47,7 @@
   const nodes = () => {
     const out = [];
     for (const n of page.querySelectorAll('*')) {
-      if (n.closest('.fsel, .fcur, svg, script, [hidden]') || n.matches('script, style, svg *')) continue;
+      if (n.closest('.fsel, .fcur, svg, script, [hidden], [data-nofm]') || n.matches('script, style, svg *')) continue;
       if (n.matches('.hero h1')) { out.push(n); continue; }
       if (n.closest('.hero h1')) continue;
       if (n.hasAttribute('data-l') || n.matches('.hd, .hero, section, .ft')) { out.push(n); continue; }
@@ -250,6 +250,8 @@
     if (n.matches('.hero')) return ['auto', 'Hero'];
     if (n.matches('.ft')) return ['auto', 'Footer'];
     if (n.matches('section')) return ['auto', ((n.querySelector('h2') || {}).textContent || 'Section').trim()];
+    if (n.matches('.qa-list')) return ['frame', 'Questions'];
+    if (n.matches('.pstep .fb')) return ['frame', 'Step'];
     if (n.matches('[data-l="i"]')) return n.closest('.mv') ? ['video', 'Video'] : n.matches('.av') ? ['img', 'Avatar'] : ['img', 'Cover'];
     if (n.matches('.arrows')) return ['auto', 'Arrows'];
     if (n.matches('.card .cap')) return ['auto', 'Caption'];
